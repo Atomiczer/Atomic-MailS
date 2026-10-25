@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คลังบัญชี</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500&family=Noto+Serif+Thai:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ebe6da; --surface:#f4f0e6; --ink:#38362e; --muted:#7d7a6b; --line:#d3ccba;
+  --moss:#5f6b4a; --moss-soft:#d9dcc6; --clay:#9a6f4f; --clay-soft:#e6d5c3; --danger:#8c4a3c;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#25241f; --surface:#2e2d26; --ink:#e6e1d3; --muted:#9b9784; --line:#464438;
+    --moss:#a9b58a; --moss-soft:#3a4030; --clay:#cfa27f; --clay-soft:#43372c; --danger:#d08a7a;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#25241f; --surface:#2e2d26; --ink:#e6e1d3; --muted:#9b9784; --line:#464438;
+  --moss:#a9b58a; --moss-soft:#3a4030; --clay:#cfa27f; --clay-soft:#43372c; --danger:#d08a7a;
+  color-scheme:dark;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font-family:"IBM Plex Sans Thai","Sarabun","Noto Sans Thai",system-ui,sans-serif;font-weight:400;line-height:1.6}
+main{max-width:720px;margin:0 auto;padding:56px 22px 80px}
+h1{font-family:"Noto Serif Thai",Georgia,serif;font-weight:600;font-size:2rem;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 36px;font-weight:300}
+.summary{display:flex;gap:28px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.summary div{display:flex;flex-direction:column}
+.summary b{font-family:"Noto Serif Thai",Georgia,serif;font-size:1.6rem;font-weight:400;line-height:1.2}
+.summary span{color:var(--muted);font-size:.85rem}
+form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:48px}
+label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;color:var(--muted)}
+label.wide{grid-column:1/-1}
+input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);
+  border-radius:6px;padding:11px 13px;outline:none;transition:border-color .15s}
+input:focus-visible{border-color:var(--moss);box-shadow:0 0 0 3px var(--moss-soft)}
+.pw{position:relative}
+.pw input{width:100%;padding-right:64px}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:5px 9px}
+button{font:inherit;cursor:pointer;border:0;background:none;color:var(--muted);border-radius:5px}
+button:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
+button.main{grid-column:1/-1;background:var(--moss);color:var(--surface);padding:12px;font-weight:500;border-radius:6px;transition:opacity .15s}
+button.main:hover{opacity:.9}
+:root[data-theme="dark"] button.main,
+:root:not([data-theme="light"]) button.main{color:var(--bg)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) button.main{color:#f4f0e6}}
+h2{font-family:"Noto Serif Thai",Georgia,serif;font-weight:400;font-size:1.15rem;margin:0 0 4px}
+.item{padding:20px 0;border-top:1px solid var(--line)}
+.item:last-child{border-bottom:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.status{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;font-weight:500}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--clay)}
+.ready .dot{background:var(--moss)}
+.ready .status{color:var(--moss)}
+.wait .status{color:var(--clay)}
+.time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem}
+.bar{height:3px;background:var(--line);border-radius:2px;margin:12px 0 14px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--clay);transition:width .5s}
+.ready .bar i{background:var(--moss)}
+dl{display:grid;grid-template-columns:90px 1fr;gap:4px 12px;margin:0;font-size:.95rem}
+dt{color:var(--muted)}
+dd{margin:0;word-break:break-all;display:flex;gap:10px;align-items:center}
+.mini{font-size:.8rem;padding:2px 8px;border:1px solid var(--line);color:var(--muted)}
+.mini:hover{color:var(--ink);border-color:var(--muted)}
+.foot{display:flex;justify-content:space-between;margin-top:12px;font-size:.8rem;color:var(--muted)}
+.del:hover{color:var(--danger)}
+.empty{color:var(--muted);padding:28px 0;text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.err{grid-column:1/-1;color:var(--danger);font-size:.85rem;min-height:1.2em;margin:-4px 0 0}
+@media (max-width:520px){form{grid-template-columns:1fr}.summary{gap:20px}dl{grid-template-columns:70px 1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <h1>คลังบัญชี</h1>
+  <p class="sub">บันทึกข้อมูลแล้วรอครบ 7 วัน ระบบจะแจ้งว่าพร้อมใช้งาน</p>
+
+  <div class="summary" aria-live="polite">
+    <div><b id="nAll">0</b><span>ทั้งหมด</span></div>
+    <div><b id="nWait">0</b><span>กำลังรอ</span></div>
+    <div><b id="nReady">0</b><span>พร้อมใช้งาน</span></div>
+  </div>
+
+  <form id="f" autocomplete="off" novalidate>
+    <label class="wide">อีเมล
+      <input id="email" type="email" placeholder="name@example.com" required>
+    </label>
+    <label>เบอร์โทรศัพท์
+      <input id="phone" type="tel" inputmode="tel" placeholder="08x-xxx-xxxx" required>
+    </label>
+    <label>รหัสผ่าน
+      <span class="pw">
+        <input id="pass" type="password" required>
+        <button type="button" id="tg">แสดง</button>
+      </span>
+    </label>
+    <p class="err" id="err" role="alert"></p>
+    <button class="main" type="submit">บันทึกและเริ่มนับ 7 วัน</button>
+  </form>
+
+  <h2>รายการทั้งหมด</h2>
+  <div id="list"></div>
+</main>
+
+<script>
+(function(){
+  var KEY='vault-items-v1', WAIT=7*24*3600*1000;
+  var items=[], shown={};
+  function load(){try{var r=localStorage.getItem(KEY);items=r?JSON.parse(r):[];if(!Array.isArray(items))items=[]}catch(e){items=[]}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
+  var $=function(id){return document.getElementById(id)};
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function pad(n){return String(n).padStart(2,'0')}
+  function fmtLeft(ms){
+    var s=Math.max(0,Math.floor(ms/1000)),d=Math.floor(s/86400);s%=86400;
+    var h=Math.floor(s/3600);s%=3600;var m=Math.floor(s/60);s%=60;
+    return 'เหลืออีก '+d+' วัน '+pad(h)+':'+pad(m)+':'+pad(s);
+  }
+  function fmtDate(t){return new Date(t).toLocaleString('th-TH',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+
+  function render(){
+    var el=$('list');
+    if(!items.length){el.innerHTML='<p class="empty">ยังไม่มีข้อมูล กรอกแบบฟอร์มด้านบนเพื่อเริ่มต้น</p>';update();return}
+    el.innerHTML=items.map(function(it){
+      var pw=shown[it.id]?esc(it.pass):'••••••••';
+      return '<article class="item" data-id="'+it.id+'">'+
+        '<div class="row"><span class="status"><i class="dot"></i><span class="st"></span></span><span class="time"></span></div>'+
+        '<div class="bar"><i></i></div>'+
+        '<dl>'+
+          '<dt>อีเมล</dt><dd>'+esc(it.email)+'</dd>'+
+          '<dt>เบอร์โทร</dt><dd>'+esc(it.phone)+'</dd>'+
+          '<dt>รหัสผ่าน</dt><dd><span>'+pw+'</span>'+
+            '<button class="mini" data-a="show">'+(shown[it.id]?'ซ่อน':'แสดง')+'</button>'+
+            '<button class="mini" data-a="copy">คัดลอก</button></dd>'+
+        '</dl>'+
+        '<div class="foot"><span>บันทึกเมื่อ '+fmtDate(it.createdAt)+'</span><button class="del" data-a="del">ลบ</button></div>'+
+      '</article>';
+    }).join('');
+    update();
+  }
+
+  function update(){
+    var now=Date.now(),w=0,r=0;
+    items.forEach(function(it){
+      var art=document.querySelector('[data-id="'+it.id+'"]');
+      var left=it.createdAt+WAIT-now,ready=left<=0;
+      ready?r++:w++;
+      if(!art)return;
+      art.classList.toggle('ready',ready);art.classList.toggle('wait',!ready);
+      art.querySelector('.st').textContent=ready?'พร้อมใช้งาน':'กำลังรอ';
+      art.querySelector('.time').textContent=ready?'ครบกำหนด '+fmtDate(it.createdAt+WAIT):fmtLeft(left);
+      art.querySelector('.bar i').style.width=Math.min(100,(now-it.createdAt)/WAIT*100)+'%';
+    });
+    $('nAll').textContent=items.length;$('nWait').textContent=w;$('nReady').textContent=r;
+  }
+
+  $('tg').addEventListener('click',function(){
+    var p=$('pass'),h=p.type==='password';p.type=h?'text':'password';this.textContent=h?'ซ่อน':'แสดง';
+  });
+
+  $('f').addEventListener('submit',function(e){
+    e.preventDefault();
+    var email=$('email').value.trim(),phone=$('phone').value.trim(),pass=$('pass').value;
+    var err='';
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))err='กรุณากรอกอีเมลให้ถูกต้อง';
+    else if(phone.replace(/\D/g,'').length<9)err='กรุณากรอกเบอร์โทรศัพท์ให้ครบ';
+    else if(!pass)err='กรุณากรอกรหัสผ่าน';
+    $('err').textContent=err;
+    if(err)return;
+    items.unshift({id:'i'+Date.now(),email:email,phone:phone,pass:pass,createdAt:Date.now()});
+    save();this.reset();$('pass').type='password';$('tg').textContent='แสดง';render();
+  });
+
+  $('list').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-a]');if(!b)return;
+    var id=b.closest('.item').dataset.id,it=items.filter(function(x){return x.id===id})[0];
+    if(!it)return;
+    var a=b.dataset.a;
+    if(a==='show'){shown[id]=!shown[id];render()}
+    else if(a==='del'){if(confirm('ลบรายการนี้ใช่หรือไม่')){items=items.filter(function(x){return x.id!==id});save();render()}}
+    else if(a==='copy'){
+      var done=function(){b.textContent='คัดลอกแล้ว';setTimeout(function(){b.textContent='คัดลอก'},1200)};
+      try{navigator.clipboard.writeText(it.pass).then(done,function(){})}catch(x){}
+    }
+  });
+
+  load();render();setInterval(update,1000);
+})();
+</script>
+</body>
+</html>
