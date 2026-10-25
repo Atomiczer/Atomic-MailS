@@ -146,9 +146,11 @@ body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
 #ledger .tabs,#ledger #L_list{order:2}}
 /* เมนูสลับหน้า */
 [hidden]{display:none!important}
-.top{max-width:1120px;margin:0 auto;padding:28px 22px 0;display:flex;gap:26px}
-.top button{padding:6px 2px;color:var(--muted);border-bottom:2px solid transparent;border-radius:0;font-weight:500}
-.top button.on{color:var(--ink);border-bottom-color:var(--moss)}
+.top{max-width:1120px;margin:0 auto;padding:28px 22px 0;display:flex;gap:8px}
+.top button{font:inherit;font-weight:500;cursor:pointer;background:none;border:1px solid var(--line);color:var(--muted);padding:7px 20px;border-radius:999px;transition:color .15s,border-color .15s,background .15s}
+.top button:hover:not(.on){color:var(--ink);border-color:var(--muted)}
+.top button.on{background:var(--moss);border-color:var(--moss);color:var(--bg)}
+.top button:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
 #vault,#ledger{padding-top:36px}
 </style>
 </head>
