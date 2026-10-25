@@ -168,8 +168,8 @@ body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
   </div>
 
   <form id="f" autocomplete="off" novalidate>
-    <label class="wide">อีเมล
-      <input id="email" type="email" placeholder="name@example.com" required>
+    <label class="wide">อีเมล (ไม่บังคับ)
+      <input id="email" type="email" placeholder="name@example.com">
     </label>
     <label>เบอร์โทรศัพท์
       <input id="phone" type="tel" inputmode="tel" placeholder="08x-xxx-xxxx" required>
@@ -240,7 +240,7 @@ body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
         '<div class="row"><span class="status"><i class="dot"></i><span class="st"></span></span><span class="time"></span></div>'+
         '<div class="bar"><i></i></div>'+
         '<dl>'+
-          '<dt>อีเมล</dt><dd>'+esc(it.email)+'</dd>'+
+          (it.email?'<dt>อีเมล</dt><dd>'+esc(it.email)+'</dd>':'')+
           '<dt>เบอร์โทร</dt><dd>'+esc(it.phone)+'</dd>'+
           '<dt>รหัสผ่าน</dt><dd><span>'+pw+'</span>'+
             '<button class="mini" data-a="show">'+(shown[it.id]?'ซ่อน':'แสดง')+'</button>'+
@@ -275,7 +275,7 @@ body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
     e.preventDefault();
     var email=$('email').value.trim(),phone=$('phone').value.trim(),pass=$('pass').value;
     var err='';
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))err='กรุณากรอกอีเมลให้ถูกต้อง';
+    if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))err='กรุณากรอกอีเมลให้ถูกต้อง';
     else if(phone.replace(/\D/g,'').length<9)err='กรุณากรอกเบอร์โทรศัพท์ให้ครบ';
     else if(!pass)err='กรุณากรอกรหัสผ่าน';
     $('err').textContent=err;
