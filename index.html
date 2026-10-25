@@ -31,14 +31,22 @@ html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
   font-family:"IBM Plex Sans Thai","Sarabun","Noto Sans Thai",system-ui,sans-serif;font-weight:400;line-height:1.6}
-main{max-width:720px;margin:0 auto;padding:56px 22px 80px}
+main{max-width:1120px;margin:0 auto;padding:56px 22px 80px;display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);column-gap:56px;align-content:start}
+h1,.sub{grid-column:1/-1}
+form{grid-column:1;grid-row:3/span 4;align-self:start}
+.summary{grid-column:2;grid-row:3}
+h2{grid-column:2;grid-row:4}
+.tabs{grid-column:2;grid-row:5;display:flex;gap:6px;margin:8px 0 14px}
+#list{grid-column:2;grid-row:6}
+.tabs button{padding:5px 14px;border:1px solid var(--line);font-size:.88rem}
+.tabs button.on{background:var(--moss);color:var(--bg);border-color:var(--moss)}
 h1{font-family:"Noto Serif Thai",Georgia,serif;font-weight:600;font-size:2rem;margin:0 0 6px;letter-spacing:-.01em}
 .sub{color:var(--muted);margin:0 0 36px;font-weight:300}
-.summary{display:flex;gap:28px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.summary{display:flex;flex-wrap:wrap;gap:28px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--line)}
 .summary div{display:flex;flex-direction:column}
 .summary b{font-family:"Noto Serif Thai",Georgia,serif;font-size:1.6rem;font-weight:400;line-height:1.2}
 .summary span{color:var(--muted);font-size:.85rem}
-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:48px}
+form{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px}
 label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;color:var(--muted)}
 label.wide{grid-column:1/-1}
 input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);
@@ -63,6 +71,8 @@ h2{font-family:"Noto Serif Thai",Georgia,serif;font-weight:400;font-size:1.15rem
 .ready .dot{background:var(--moss)}
 .ready .status{color:var(--moss)}
 .wait .status{color:var(--clay)}
+.done .dot{background:var(--moss)}.done .status{color:var(--moss)}.done .bar i{background:var(--moss)}.done dl{opacity:.65}
+.acts{display:flex;gap:14px;align-items:center}.ok{color:var(--moss);border:1px solid var(--moss);padding:3px 12px}.ok:hover{background:var(--moss-soft)}
 .time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem}
 .bar{height:3px;background:var(--line);border-radius:2px;margin:12px 0 14px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--clay);transition:width .5s}
@@ -76,6 +86,7 @@ dd{margin:0;word-break:break-all;display:flex;gap:10px;align-items:center}
 .del:hover{color:var(--danger)}
 .empty{color:var(--muted);padding:28px 0;text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .err{grid-column:1/-1;color:var(--danger);font-size:.85rem;min-height:1.2em;margin:-4px 0 0}
+@media (max-width:820px){main{display:flex;flex-direction:column}form{margin-bottom:36px}.summary{order:1}h2,.tabs,#list{order:2}}
 @media (max-width:520px){form{grid-template-columns:1fr}.summary{gap:20px}dl{grid-template-columns:70px 1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -89,6 +100,7 @@ dd{margin:0;word-break:break-all;display:flex;gap:10px;align-items:center}
     <div><b id="nAll">0</b><span>ทั้งหมด</span></div>
     <div><b id="nWait">0</b><span>กำลังรอ</span></div>
     <div><b id="nReady">0</b><span>พร้อมใช้งาน</span></div>
+    <div><b id="nDone">0</b><span>สำเร็จ</span></div>
   </div>
 
   <form id="f" autocomplete="off" novalidate>
@@ -108,14 +120,15 @@ dd{margin:0;word-break:break-all;display:flex;gap:10px;align-items:center}
     <button class="main" type="submit">บันทึกและเริ่มนับ 7 วัน</button>
   </form>
 
-  <h2>รายการทั้งหมด</h2>
+  <h2>แดชบอร์ด</h2>
+  <div class="tabs"><button data-f="all" class="on">ทั้งหมด</button><button data-f="open">ยังไม่เสร็จ</button><button data-f="done">เสร็จสิ้น</button></div>
   <div id="list"></div>
 </main>
 
 <script>
 (function(){
   var KEY='vault-items-v1', WAIT=7*24*3600*1000;
-  var items=[], shown={};
+  var items=[], shown={}, filter='all';
   function load(){try{var r=localStorage.getItem(KEY);items=r?JSON.parse(r):[];if(!Array.isArray(items))items=[]}catch(e){items=[]}}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
   var $=function(id){return document.getElementById(id)};
@@ -130,8 +143,9 @@ dd{margin:0;word-break:break-all;display:flex;gap:10px;align-items:center}
 
   function render(){
     var el=$('list');
-    if(!items.length){el.innerHTML='<p class="empty">ยังไม่มีข้อมูล กรอกแบบฟอร์มด้านบนเพื่อเริ่มต้น</p>';update();return}
-    el.innerHTML=items.map(function(it){
+    var vis=items.filter(function(it){return filter==='all'||(filter==='done'?!!it.doneAt:!it.doneAt)});
+    if(!vis.length){el.innerHTML='<p class="empty">ยังไม่มีรายการ</p>';update();return}
+    el.innerHTML=vis.map(function(it){
       var pw=shown[it.id]?esc(it.pass):'••••••••';
       return '<article class="item" data-id="'+it.id+'">'+
         '<div class="row"><span class="status"><i class="dot"></i><span class="st"></span></span><span class="time"></span></div>'+
@@ -143,25 +157,25 @@ dd{margin:0;word-break:break-all;display:flex;gap:10px;align-items:center}
             '<button class="mini" data-a="show">'+(shown[it.id]?'ซ่อน':'แสดง')+'</button>'+
             '<button class="mini" data-a="copy">คัดลอก</button></dd>'+
         '</dl>'+
-        '<div class="foot"><span>บันทึกเมื่อ '+fmtDate(it.createdAt)+'</span><button class="del" data-a="del">ลบ</button></div>'+
+        '<div class="foot"><span>บันทึกเมื่อ '+fmtDate(it.createdAt)+'</span><span class="acts"><button class="ok" data-a="done">'+(it.doneAt?'ยกเลิกสำเร็จ':'กดสำเร็จ')+'</button><button class="del" data-a="del">ลบ</button></span></div>'+
       '</article>';
     }).join('');
     update();
   }
 
   function update(){
-    var now=Date.now(),w=0,r=0;
+    var now=Date.now(),w=0,r=0,d=0;
     items.forEach(function(it){
       var art=document.querySelector('[data-id="'+it.id+'"]');
-      var left=it.createdAt+WAIT-now,ready=left<=0;
-      ready?r++:w++;
+      var left=it.createdAt+WAIT-now,done=!!it.doneAt,ready=!done&&left<=0,wait=!done&&left>0;
+      if(done)d++;else if(ready)r++;else w++;
       if(!art)return;
-      art.classList.toggle('ready',ready);art.classList.toggle('wait',!ready);
-      art.querySelector('.st').textContent=ready?'พร้อมใช้งาน':'กำลังรอ';
-      art.querySelector('.time').textContent=ready?'ครบกำหนด '+fmtDate(it.createdAt+WAIT):fmtLeft(left);
-      art.querySelector('.bar i').style.width=Math.min(100,(now-it.createdAt)/WAIT*100)+'%';
+      art.classList.toggle('done',done);art.classList.toggle('ready',ready);art.classList.toggle('wait',wait);
+      art.querySelector('.st').textContent=done?'สำเร็จ ✓':(ready?'พร้อมใช้งาน':'กำลังรอ');
+      art.querySelector('.time').textContent=done?'สำเร็จเมื่อ '+fmtDate(it.doneAt):(ready?'ครบกำหนด '+fmtDate(it.createdAt+WAIT):fmtLeft(left));
+      art.querySelector('.bar i').style.width=(done?100:Math.min(100,(now-it.createdAt)/WAIT*100))+'%';
     });
-    $('nAll').textContent=items.length;$('nWait').textContent=w;$('nReady').textContent=r;
+    $('nAll').textContent=items.length;$('nWait').textContent=w;$('nReady').textContent=r;$('nDone').textContent=d;
   }
 
   $('tg').addEventListener('click',function(){
@@ -187,12 +201,15 @@ dd{margin:0;word-break:break-all;display:flex;gap:10px;align-items:center}
     if(!it)return;
     var a=b.dataset.a;
     if(a==='show'){shown[id]=!shown[id];render()}
+    else if(a==='done'){it.doneAt=it.doneAt?null:Date.now();save();render()}
     else if(a==='del'){if(confirm('ลบรายการนี้ใช่หรือไม่')){items=items.filter(function(x){return x.id!==id});save();render()}}
     else if(a==='copy'){
       var done=function(){b.textContent='คัดลอกแล้ว';setTimeout(function(){b.textContent='คัดลอก'},1200)};
       try{navigator.clipboard.writeText(it.pass).then(done,function(){})}catch(x){}
     }
   });
+
+  document.querySelector('.tabs').addEventListener('click',function(e){var b=e.target.closest('button[data-f]');if(!b)return;filter=b.dataset.f;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});render()});
 
   load();render();setInterval(update,1000);
 })();
