@@ -100,50 +100,48 @@ body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
 #vault dl{grid-template-columns:70px 1fr}}
 @media (prefers-reduced-motion:reduce){#vault *{transition:none!important}}
 /* รายรับรายจ่าย */
-#ledger{max-width:1120px;margin:0 auto;padding:56px 22px 80px;display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);column-gap:56px;align-content:start}
-#ledger h1,#ledger .sub{grid-column:1/-1}
+#ledger{max-width:1120px;margin:0 auto;padding:56px 22px 80px}
 #ledger h1{font-family:"Noto Serif Thai",Georgia,serif;font-weight:600;font-size:2rem;margin:0 0 6px;letter-spacing:-.01em}
-#ledger .sub{color:var(--muted);margin:0 0 36px;font-weight:300}
-#ledger .sub a{color:var(--moss);font-weight:500}
-#ledger form{grid-column:1;grid-row:3/span 3;align-self:start;display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px}
-#ledger .summary{grid-column:2;grid-row:3;display:flex;flex-wrap:wrap;gap:28px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+#ledger .sub{color:var(--muted);margin:0 0 28px;font-weight:300}
+#ledger .summary{display:flex;flex-wrap:wrap;gap:32px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line)}
 #ledger .summary div{display:flex;flex-direction:column}
 #ledger .summary b{font-family:"Noto Serif Thai",Georgia,serif;font-size:1.6rem;font-weight:400;line-height:1.2;font-variant-numeric:tabular-nums}
 #ledger .summary span{color:var(--muted);font-size:.85rem}
-#ledger #inc{color:var(--moss)}
-#ledger #exp{color:var(--clay)}
-#ledger .tabs{grid-column:2;grid-row:4;display:flex;gap:6px;margin-bottom:8px;align-items:center;flex-wrap:wrap}
-#ledger #L_list{grid-column:2;grid-row:5}
+#ledger #L_rest{color:var(--clay)}
+#ledger #L_paidv{color:var(--moss)}
+#ledger form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:32px}
+#ledger .s2{grid-column:span 2}
+#ledger .s4{grid-column:1/-1}
 #ledger label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;color:var(--muted)}
-#ledger input,#ledger select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;outline:none}
+#ledger input,#ledger select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;outline:none;width:100%}
 #ledger input:focus-visible,#ledger select:focus-visible{border-color:var(--moss);box-shadow:0 0 0 3px var(--moss-soft)}
 #ledger button{font:inherit;cursor:pointer;border:0;background:none;color:var(--muted);border-radius:5px}
 #ledger button:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
-#ledger .seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:6px;overflow:hidden}
-#ledger .seg button{padding:10px;border-radius:0}
-#ledger .seg button.on{background:var(--moss);color:var(--bg);font-weight:500}
-#ledger .seg button[data-t="out"].on{background:var(--clay)}
 #ledger button.main{background:var(--moss);color:var(--bg);padding:12px;font-weight:500;border-radius:6px}
 #ledger button.main:hover{opacity:.9}
 #ledger .err{color:var(--danger);font-size:.85rem;min-height:1.2em;margin:-4px 0 0}
+#ledger .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
 #ledger .tabs button{padding:5px 14px;border:1px solid var(--line);font-size:.88rem}
 #ledger .tabs button.on{background:var(--moss);color:var(--bg);border-color:var(--moss)}
-#ledger .tabs input{margin-left:auto;padding:5px 10px;font-size:.88rem}
-#ledger .row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 0;border-top:1px solid var(--line)}
-#ledger .row:last-child{border-bottom:1px solid var(--line)}
-#ledger .info{min-width:0}
-#ledger .cat{font-weight:500}
-#ledger .meta{color:var(--muted);font-size:.85rem;word-break:break-word}
-#ledger .amt{font-variant-numeric:tabular-nums;font-weight:500;white-space:nowrap;text-align:right}
-#ledger .amt.in{color:var(--moss)}
-#ledger .amt.out{color:var(--clay)}
-#ledger .del{font-size:.8rem;display:block;margin-left:auto}
+#ledger .wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+#ledger table{width:100%;border-collapse:collapse;min-width:720px;font-variant-numeric:tabular-nums}
+#ledger th{background:var(--moss);color:var(--bg);font-weight:500;padding:12px 10px;text-align:center;font-size:.9rem;white-space:nowrap}
+#ledger td{padding:11px 10px;text-align:center;border-top:1px solid var(--line)}
+#ledger td.name{text-align:left}
+#ledger td.name small{display:block;color:var(--muted);font-size:.8rem;word-break:break-all}
+#ledger td.in{background:var(--moss-soft)}
+#ledger td.out{background:var(--clay-soft)}
+#ledger td.sum{text-align:right;font-weight:500}
+#ledger td.emp{color:var(--muted);padding:28px}
+#ledger tfoot td{font-weight:500;border-top:2px solid var(--line)}
+#ledger tfoot td.lab{text-align:right;color:var(--muted)}
+#ledger tfoot td.sum{color:var(--clay)}
+#ledger .pay{padding:3px 14px;border:1px solid;border-radius:999px;font-size:.88rem}
+#ledger .pay.no{color:var(--clay);border-color:var(--clay)}
+#ledger .pay.yes{background:var(--moss);border-color:var(--moss);color:var(--bg)}
+#ledger .del{font-size:.8rem}
 #ledger .del:hover{color:var(--danger)}
-#ledger .empty{color:var(--muted);padding:28px 0;text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-@media (max-width:820px){#ledger{display:flex;flex-direction:column}
-#ledger form{margin-bottom:36px}
-#ledger .summary{order:1}
-#ledger .tabs,#ledger #L_list{order:2}}
+@media (max-width:720px){#ledger form{grid-template-columns:1fr 1fr}#ledger .s2{grid-column:1/-1}}
 /* เมนูสลับหน้า */
 [hidden]{display:none!important}
 .top{max-width:1120px;margin:0 auto;padding:28px 22px 0;display:flex;gap:8px}
@@ -190,29 +188,35 @@ body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
 </main>
 <main id="ledger" hidden>
   <h1>รายรับรายจ่าย</h1>
-  <p class="sub">จดรายการเงินเข้าออก แล้วดูยอดคงเหลือแต่ละเดือน</p>
-
-  <form id="L_f" autocomplete="off" novalidate>
-    <div class="seg"><button type="button" data-t="in">รายรับ</button><button type="button" data-t="out" class="on">รายจ่าย</button></div>
-    <label>จำนวนเงิน (บาท)<input id="amount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00"></label>
-    <label>หมวดหมู่<select id="cat"></select></label>
-    <label>บันทึกเพิ่มเติม<input id="note" type="text" placeholder="ไม่บังคับ"></label>
-    <label>อีเมล (ไม่บังคับ)<input id="L_email" type="email" placeholder="name@example.com"></label>
-    <label>วันที่<input id="date" type="date"></label>
-    <p class="err" id="L_err" role="alert"></p>
-    <button class="main" type="submit">บันทึกรายการ</button>
-  </form>
+  <p class="sub">จดรายการรับเข้าและขายออก ยอดคงเหลือจะนับเฉพาะรายการที่ยังไม่ชำระ</p>
 
   <div class="summary" aria-live="polite">
-    <div><b id="inc">0.00</b><span>รายรับ</span></div>
-    <div><b id="exp">0.00</b><span>รายจ่าย</span></div>
-    <div><b id="bal">0.00</b><span>คงเหลือ</span></div>
+    <div><b id="L_tot">0</b><span>รวมทั้งหมด</span></div>
+    <div><b id="L_paidv">0</b><span>ชำระแล้ว</span></div>
+    <div><b id="L_rest">0</b><span>คงเหลือ (ยังไม่ชำระ)</span></div>
   </div>
+
+  <form id="L_f" autocomplete="off" novalidate>
+    <label class="s2">รายการ<input id="L_name" type="text" placeholder="เช่น โอโม 99 บาท"></label>
+    <label>จำนวน<input id="L_qty" type="number" inputmode="decimal" min="0" step="any" value="1"></label>
+    <label>ราคารับ<input id="L_in" type="number" inputmode="decimal" min="0" step="any" placeholder="0"></label>
+    <label>ราคาออก<input id="L_out" type="number" inputmode="decimal" min="0" step="any" placeholder="0"></label>
+    <label>ชำระหรือยัง<select id="L_paid"><option value="0">ยัง</option><option value="1">ชำระแล้ว</option></select></label>
+    <label class="s2">อีเมล (ไม่บังคับ)<input id="L_email" type="email" placeholder="name@example.com"></label>
+    <p class="err s4" id="L_err" role="alert"></p>
+    <button class="main s4" type="submit">เพิ่มรายการ</button>
+  </form>
+
   <div class="tabs">
-    <button data-f="all" class="on">ทั้งหมด</button><button data-f="in">รายรับ</button><button data-f="out">รายจ่าย</button>
-    <input type="month" id="month" aria-label="เลือกเดือน">
+    <button data-f="all" class="on">ทั้งหมด</button><button data-f="open">ยังไม่ชำระ</button><button data-f="done">ชำระแล้ว</button>
   </div>
-  <div id="L_list"></div>
+  <div class="wrap">
+    <table>
+      <thead><tr><th>ลำดับ</th><th>รายการ</th><th>จำนวน</th><th>ราคารับ</th><th>ราคาออก</th><th>รวม</th><th>ชำระหรือยัง</th><th></th></tr></thead>
+      <tbody id="L_body"></tbody>
+      <tfoot><tr><td colspan="5" class="lab">คงเหลือ (ยังไม่ชำระ)</td><td class="sum" id="L_sum">0</td><td colspan="2"></td></tr></tfoot>
+    </table>
+  </div>
 </main>
 <script>
 (function(){
@@ -303,63 +307,55 @@ body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
   load();render();setInterval(update,1000);
 })();
 </script>
-<script>
-(function(){
-  var KEY='ledger-v1',items=[],type='out',filter='all';
-  var CATS={in:['เงินเดือน','รายได้เสริม','ของขวัญ','อื่นๆ'],out:['อาหาร','เดินทาง','ที่พัก','ช้อปปิ้ง','สุขภาพ','อื่นๆ']};
+<script>(function(){
+  var KEY='ledger-v2',items=[],filter='all';
   var $=function(id){return document.getElementById(id)};
   function load(){try{var r=localStorage.getItem(KEY);items=r?JSON.parse(r):[];if(!Array.isArray(items))items=[]}catch(e){items=[]}}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-  function fmt(n){return n.toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2})}
-  function fmtDate(d){return new Date(d+'T00:00:00').toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})}
-  function today(){return new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10)}
-
-  function fillCats(){$('cat').innerHTML=CATS[type].map(function(c){return '<option>'+c+'</option>'}).join('')}
+  function fmt(n){return n.toLocaleString('th-TH',{maximumFractionDigits:2})}
 
   function render(){
-    var m=$('month').value;
-    var inM=items.filter(function(it){return !m||it.date.slice(0,7)===m});
-    var inc=0,exp=0;
-    inM.forEach(function(it){it.type==='in'?inc+=it.amount:exp+=it.amount});
-    $('inc').textContent=fmt(inc);$('exp').textContent=fmt(exp);$('bal').textContent=fmt(inc-exp);
-    var vis=inM.filter(function(it){return filter==='all'||it.type===filter})
-      .sort(function(a,b){return b.date.localeCompare(a.date)||b.createdAt-a.createdAt});
-    $('L_list').innerHTML=vis.length?vis.map(function(it){
-      return '<div class="row" data-id="'+it.id+'"><div class="info"><div class="cat">'+esc(it.cat)+'</div>'+
-        '<div class="meta">'+fmtDate(it.date)+(it.note?' – '+esc(it.note):'')+(it.email?' – '+esc(it.email):'')+'</div></div>'+
-        '<div><div class="amt '+it.type+'">'+(it.type==='in'?'+':'−')+fmt(it.amount)+'</div><button class="del" data-a="del">ลบ</button></div></div>';
-    }).join(''):'<p class="empty">ยังไม่มีรายการ</p>';
+    var tot=0,paid=0,rest=0;
+    items.forEach(function(it){var s=it.out-it.in;tot+=s;if(it.paid)paid+=s;else rest+=s});
+    $('L_tot').textContent=fmt(tot);$('L_paidv').textContent=fmt(paid);$('L_rest').textContent=fmt(rest);$('L_sum').textContent=fmt(rest);
+    var rows=[];
+    items.forEach(function(it,i){
+      var show=filter==='all'||(filter==='open'?!it.paid:it.paid);
+      if(!show)return;
+      rows.push('<tr data-id="'+it.id+'"><td>'+(i+1)+'</td>'+
+        '<td class="name">'+esc(it.name)+(it.email?'<small>'+esc(it.email)+'</small>':'')+'</td>'+
+        '<td>'+fmt(it.qty)+'</td><td class="in">'+fmt(it.in)+'</td><td class="out">'+fmt(it.out)+'</td>'+
+        '<td class="sum">'+fmt(it.out-it.in)+'</td>'+
+        '<td><button class="pay '+(it.paid?'yes':'no')+'" data-a="pay">'+(it.paid?'ชำระแล้ว':'ยัง')+'</button></td>'+
+        '<td><button class="del" data-a="del">ลบ</button></td></tr>');
+    });
+    $('L_body').innerHTML=rows.length?rows.join(''):'<tr><td colspan="8" class="emp">ยังไม่มีรายการ</td></tr>';
   }
 
-  document.querySelector('#ledger .seg').addEventListener('click',function(e){
-    var b=e.target.closest('button[data-t]');if(!b)return;
-    type=b.dataset.t;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});fillCats();
-  });
   document.querySelector('#ledger .tabs').addEventListener('click',function(e){
     var b=e.target.closest('button[data-f]');if(!b)return;
     filter=b.dataset.f;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});render();
   });
-  $('month').addEventListener('input',render);
 
   $('L_f').addEventListener('submit',function(e){
     e.preventDefault();
-    var amt=parseFloat($('amount').value),date=$('date').value,em=$('L_email').value.trim();
-    var err=!(amt>0)?'กรุณากรอกจำนวนเงินมากกว่า 0':(!date?'กรุณาเลือกวันที่':(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)?'กรุณากรอกอีเมลให้ถูกต้อง':''));
+    var name=$('L_name').value.trim(),qty=parseFloat($('L_qty').value),pin=parseFloat($('L_in').value),pout=parseFloat($('L_out').value),em=$('L_email').value.trim();
+    var err=!name?'กรุณากรอกชื่อรายการ':!(qty>0)?'กรุณากรอกจำนวนมากกว่า 0':(isNaN(pin)||pin<0)?'กรุณากรอกราคารับ':(isNaN(pout)||pout<0)?'กรุณากรอกราคาออก':(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))?'กรุณากรอกอีเมลให้ถูกต้อง':'';
     $('L_err').textContent=err;if(err)return;
-    items.push({id:'t'+Date.now(),type:type,amount:amt,cat:$('cat').value,note:$('note').value.trim(),email:em,date:date,createdAt:Date.now()});
-    save();$('amount').value='';$('note').value='';$('L_email').value='';render();
+    items.push({id:'t'+Date.now(),name:name,qty:qty,in:pin,out:pout,paid:$('L_paid').value==='1',email:em});
+    save();$('L_name').value='';$('L_in').value='';$('L_out').value='';$('L_email').value='';$('L_qty').value='1';render();
   });
 
-  $('L_list').addEventListener('click',function(e){
-    var b=e.target.closest('button[data-a="del"]');if(!b)return;
-    var id=b.closest('.row').dataset.id;
-    if(confirm('ลบรายการนี้ใช่หรือไม่')){items=items.filter(function(x){return x.id!==id});save();render()}
+  $('L_body').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-a]');if(!b)return;
+    var id=b.closest('tr').dataset.id,it=items.filter(function(x){return x.id===id})[0];if(!it)return;
+    if(b.dataset.a==='pay'){it.paid=!it.paid;save();render()}
+    else if(confirm('ลบรายการนี้ใช่หรือไม่')){items=items.filter(function(x){return x.id!==id});save();render()}
   });
 
-  load();fillCats();$('date').value=today();render();
-})();
-</script>
+  load();render();
+})();</script>
 <script>(function(){
   var tabs=document.querySelectorAll('.top button'),views={vault:document.getElementById('vault'),ledger:document.getElementById('ledger')};
   function show(n){if(!views[n])n='vault';for(var k in views)views[k].hidden=(k!==n);tabs.forEach(function(b){var on=b.dataset.v===n;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}
