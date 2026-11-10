@@ -116,6 +116,16 @@ dialog::backdrop{background:rgba(30,26,18,.5)}
  .content{padding:0 16px 90px}.vgrid{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;resize:vertical;outline:none}
+textarea:focus-visible{border-color:var(--moss);box-shadow:0 0 0 3px var(--moss-soft)}
+input[type=checkbox]{width:auto;padding:0}
+label.chk{flex-direction:row;align-items:center;gap:6px}
+.paste{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:12px 0}
+.paste summary{cursor:pointer;font-weight:500}
+.pbar{display:flex;gap:10px;justify-content:center;align-items:flex-end;flex-wrap:wrap;margin-top:10px}
+.pbar select{width:auto;padding:7px 10px}
+.info{color:var(--moss);font-size:.85rem;min-height:1.2em;margin:8px 0 0}
+.tin{width:160px;padding:5px 9px;font-size:.85rem;text-align:center}
 /* ledger */
 #ledger{max-width:1120px;margin:0 auto;padding:56px 22px 80px}
 #ledger h1{font-family:"Noto Serif Thai",Georgia,serif;font-weight:600;font-size:2rem;margin:0 0 6px;letter-spacing:-.01em}
@@ -221,9 +231,19 @@ dialog::backdrop{background:rgba(30,26,18,.5)}
   </div>
   <dialog id="bulk">
     <h2 style="margin:0">เพิ่มหลายรายการ</h2>
+    <details class="paste"><summary>วางข้อมูลเป็นข้อความ แล้วคัดแยกอัตโนมัติ</summary>
+      <textarea id="bText" rows="5" placeholder="วางข้อมูลทีละบรรทัด คั่นด้วย Tab, | , ; , คอมมา หรือเว้นวรรค เช่น&#10;user1 | pass1 | iPhone 13&#10;user2, pass2, Galaxy S22"></textarea>
+      <div class="pbar">
+        <label>ลำดับคอลัมน์<select id="bOrder"><option value="upm">User, รหัสผ่าน, รุ่น</option><option value="pum">รหัสผ่าน, User, รุ่น</option><option value="up">User, รหัสผ่าน</option><option value="pm">รหัสผ่าน, รุ่น</option></select></label>
+        <label>สถานะ<select id="bPLogin"><option value="0">ยังไม่ login</option><option value="1">login แล้ว</option></select></label>
+        <label class="chk"><input type="checkbox" id="bHead">ข้ามบรรทัดแรก</label>
+        <button class="btn pri" id="bParse">คัดแยกข้อมูล</button>
+      </div>
+    </details>
     <div class="bar2"><span>จำนวนแถว</span><button data-n="10" class="on">10</button><button data-n="15">15</button><button data-n="20">20</button>
       <label style="flex-direction:row;align-items:center">ตั้งทุกแถว<select id="bAll"><option value="">เลือก</option><option value="0">ยังไม่ login</option><option value="1">login แล้ว</option></select></label></div>
     <div class="bwrap"><table><thead><tr><th>#</th><th>User</th><th>รหัสผ่าน</th><th>รุ่นโทรศัพท์</th><th>สถานะ</th></tr></thead><tbody id="bBody"></tbody></table></div>
+    <p id="bInfo" class="info"></p>
     <p class="err" id="bErr" role="alert"></p>
     <div class="acts"><button class="btn" id="bCancel">ยกเลิก</button><button class="btn pri" id="bSave">บันทึกทั้งหมด</button></div>
   </dialog>
@@ -304,11 +324,12 @@ dialog::backdrop{background:rgba(30,26,18,.5)}
   function inF(s){return filter==='all'||(filter==='active'?(s==='wait'||s==='ready'):s===filter)}
   function mk(u,p,m,lg){var t=Date.now();return {id:'i'+t+Math.random().toString(36).slice(2,6),user:u,pass:p,model:m,createdAt:t,loginAt:lg?t:null,shipAt:null,doneAt:null}}
   function actions(s){
-    var a='';
-    if(s==='no')a='<button class="btn pri" data-a="login">login แล้ว</button>';
-    if(s==='wait')a='<button class="btn" data-a="login">ยกเลิก login</button>';
-    if(s==='ready')a='<button class="btn pri" data-a="ship">กำลังจัดส่ง</button><button class="btn" data-a="login">ยกเลิก login</button>';
-    if(s==='ship')a='<button class="btn pri" data-a="done">สำเร็จ</button>';
+    var P=function(a,t){return '<button class="btn pri" data-a="'+a+'">'+t+'</button>'},B=function(a,t){return '<button class="btn" data-a="'+a+'">'+t+'</button>'},a='';
+    if(s==='no')a=P('login','login แล้ว')+B('ship','กำลังจัดส่ง')+B('done','สำเร็จแล้ว');
+    if(s==='wait')a=B('ship','กำลังจัดส่ง')+B('done','สำเร็จแล้ว')+B('login','ยกเลิก login');
+    if(s==='ready')a=P('ship','กำลังจัดส่ง')+B('done','สำเร็จแล้ว')+B('login','ยกเลิก login');
+    if(s==='ship')a=P('done','สำเร็จแล้ว')+B('back','ย้อนกลับ');
+    if(s==='done')a=B('back','ย้อนกลับ');
     return a+'<button class="btn del" data-a="del">ลบ</button>';
   }
   function render(){
@@ -319,7 +340,8 @@ dialog::backdrop{background:rgba(30,26,18,.5)}
         '<p class="kv"><span>User</span><b>'+(it.user?esc(it.user):'-')+'</b></p>'+
         '<p class="kv"><span>รหัสผ่าน</span><b>'+(shown[it.id]?esc(it.pass):'••••••••')+'</b><button class="mini" data-a="show">'+(shown[it.id]?'ซ่อน':'แสดง')+'</button><button class="mini" data-a="copy">คัดลอก</button></p>'+
         '<p class="kv"><span>รุ่นโทรศัพท์</span><b>'+(it.model?esc(it.model):'-')+'</b></p>'+
-        '<small class="meta">บันทึกเมื่อ '+fmtDate(it.createdAt)+'</small><div class="acts">'+actions(s)+'</div></article>'}).join('');
+        '<p class="kv"><span>เลขพัสดุ</span><input class="tin" placeholder="กรอกเลขพัสดุ" value="'+esc(it.track||'')+'"><button class="mini" data-a="track">เช็คพัสดุ</button></p>'+
+        '<small class="meta">บันทึกเมื่อ '+fmtDate(it.createdAt)+'</small><small class="meta">เปลี่ยนสถานะ</small><div class="acts">'+actions(s)+'</div></article>'}).join('');
     update();
   }
   function update(){
@@ -350,11 +372,18 @@ dialog::backdrop{background:rgba(30,26,18,.5)}
     var a=b.dataset.a;
     if(a==='show'){shown[id]=!shown[id];render();return}
     if(a==='copy'){try{navigator.clipboard.writeText(it.pass).then(function(){b.textContent='คัดลอกแล้ว';setTimeout(function(){b.textContent='คัดลอก'},1200)},function(){})}catch(x){}return}
+    if(a==='track'){var inp=b.closest('.item').querySelector('.tin'),v=inp.value.trim();if(!v){inp.focus();return}it.track=v;save();window.open('https://t.17track.net/en#nums='+encodeURIComponent(v),'_blank','noopener');return}
     if(a==='login')it.loginAt=it.loginAt?null:Date.now();
     else if(a==='ship')it.shipAt=Date.now();
     else if(a==='done')it.doneAt=Date.now();
+    else if(a==='back'){if(it.doneAt)it.doneAt=null;else it.shipAt=null}
     else if(a==='del'){if(!confirm('ลบรายการนี้ใช่หรือไม่'))return;items=items.filter(function(x){return x.id!==id})}
     save();render();
+  });
+  $('list').addEventListener('change',function(e){
+    if(!e.target.classList.contains('tin'))return;
+    var id=e.target.closest('.item').dataset.id,it=items.filter(function(x){return x.id===id})[0];
+    if(it){it.track=e.target.value.trim();save()}
   });
   document.querySelector('#vault .tabs').addEventListener('click',function(e){var b=e.target.closest('button[data-f]');if(!b)return;filter=b.dataset.f;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});render()});
   /* หลายรายการ */
@@ -364,9 +393,28 @@ dialog::backdrop{background:rgba(30,26,18,.5)}
     $('bBody').innerHTML=h;
     old.forEach(function(v,i){var r=$('bBody').rows[i];if(r)r.querySelectorAll('[data-k]').forEach(function(x,j){x.value=v[j]})});
   }
-  $('bulkBtn').addEventListener('click',function(){bn=10;document.querySelectorAll('.bar2 [data-n]').forEach(function(x){x.classList.toggle('on',x.dataset.n==='10')});rows(false);$('bErr').textContent='';$('bAll').value='';$('bulk').showModal()});
+  $('bulkBtn').addEventListener('click',function(){bn=10;document.querySelectorAll('.bar2 [data-n]').forEach(function(x){x.classList.toggle('on',x.dataset.n==='10')});rows(false);$('bErr').textContent='';$('bInfo').textContent='';$('bText').value='';$('bAll').value='';$('bulk').showModal()});
   document.querySelector('.bar2').addEventListener('click',function(e){var b=e.target.closest('[data-n]');if(!b)return;bn=+b.dataset.n;this.querySelectorAll('[data-n]').forEach(function(x){x.classList.toggle('on',x===b)});rows(true)});
   $('bAll').addEventListener('change',function(){if(this.value==='')return;var v=this.value;$('bBody').querySelectorAll('select').forEach(function(s){s.value=v})});
+  $('bParse').addEventListener('click',function(){
+    var lines=$('bText').value.split(/\r?\n/).filter(function(l){return l.trim()});
+    if($('bHead').checked)lines.shift();
+    if(!lines.length){$('bInfo').textContent='ยังไม่มีข้อความให้คัดแยก';return}
+    var map=$('bOrder').value.split(''),pl=$('bPLogin').value,res=[];
+    lines.slice(0,200).forEach(function(l){
+      var t=l.trim(),p=l.indexOf('\t')>-1?l.split('\t'):l.indexOf('|')>-1?l.split('|'):l.indexOf(';')>-1?l.split(';'):l.indexOf(',')>-1?l.split(','):/\s{2,}/.test(t)?t.split(/\s{2,}/):t.split(/\s+/);
+      p=p.map(function(x){return x.trim()});
+      var o={u:'',p:'',m:''};
+      map.forEach(function(k,i){if(i<p.length)o[k]=(i===map.length-1)?p.slice(i).join(' '):p[i]});
+      res.push(o);
+    });
+    bn=Math.max(10,res.length);rows(false);
+    res.forEach(function(v,i){var r=$('bBody').rows[i];
+      r.querySelector('[data-k="u"]').value=v.u;r.querySelector('[data-k="p"]').value=v.p;r.querySelector('[data-k="m"]').value=v.m;r.querySelector('[data-k="l"]').value=pl});
+    document.querySelectorAll('.bar2 [data-n]').forEach(function(x){x.classList.toggle('on',+x.dataset.n===bn)});
+    $('bInfo').textContent='คัดแยกได้ '+res.length+' รายการ ตรวจสอบในตารางแล้วกด "บันทึกทั้งหมด"'+(lines.length>200?' (จำกัดที่ 200 แถว)':'');
+    $('bErr').textContent='';
+  });
   $('bCancel').addEventListener('click',function(){$('bulk').close()});
   $('bSave').addEventListener('click',function(){
     var out=[],bad=0;
