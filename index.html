@@ -126,6 +126,25 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
 .pbar select{width:auto;padding:7px 10px}
 .info{color:var(--moss);font-size:.85rem;min-height:1.2em;margin:8px 0 0}
 .tin{width:160px;padding:5px 9px;font-size:.85rem;text-align:center}
+.search{margin-bottom:12px;border-radius:999px;padding-left:18px;text-align:center}
+.item{padding:16px;margin-bottom:12px}
+.bar{height:3px;margin:12px 0}
+.hd{display:flex;justify-content:center;align-items:center;gap:4px 14px;flex-wrap:wrap}
+.st{font-size:.95rem}
+.fld{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--bg);border-radius:12px;padding:12px}
+.cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0}
+.cell small{color:var(--muted);font-size:.74rem;letter-spacing:.02em}
+.cv{display:flex;align-items:center;justify-content:center;gap:6px;min-height:30px;width:100%}
+.cv b{font-weight:400;font-size:.95rem;word-break:break-all}
+.cv .mini{height:26px;padding:0 10px;display:inline-flex;align-items:center}
+.cv .tin{width:100%;max-width:140px;height:30px;padding:0 10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;font-size:.85rem;text-align:center}
+.foot{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px}
+.foot .acts{margin:0;gap:6px}
+.foot .btn{padding:6px 16px;font-size:.84rem;min-width:84px;text-align:center}
+.foot .meta{margin:0;font-size:.76rem}
+.sep{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.8rem;margin:16px 0 10px}
+.sep:before,.sep:after{content:"";flex:1;height:1px;background:var(--line)}
+@media (max-width:520px){.fld{grid-template-columns:1fr}}
 /* ledger */
 #ledger{max-width:1120px;margin:0 auto;padding:56px 22px 80px}
 #ledger h1{font-family:"Noto Serif Thai",Georgia,serif;font-weight:600;font-size:2rem;margin:0 0 6px;letter-spacing:-.01em}
@@ -225,6 +244,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
       <button class="ghost" type="button" id="bulkBtn">เพิ่มหลายรายการ (10-20)</button>
     </form>
     <section>
+      <input id="q" class="search" type="search" placeholder="ค้นหาด้วยเลขพัสดุ หรือ User" aria-label="ค้นหา">
       <div class="tabs"><button data-f="all" class="on">ทั้งหมด</button><button data-f="no">ยังไม่ login</button><button data-f="active">รอ / พร้อมใช้งาน</button><button data-f="ship">กำลังจัดส่ง</button><button data-f="done">สำเร็จ</button></div>
       <div id="list"></div>
     </section>
@@ -333,15 +353,26 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     return a+'<button class="btn del" data-a="del">ลบ</button>';
   }
   function render(){
-    var n=Date.now(),vis=items.filter(function(it){return inF(stage(it,n))});
-    if(!vis.length){$('list').innerHTML='<p class="empty">ยังไม่มีรายการ</p>';update();return}
-    $('list').innerHTML=vis.map(function(it){var s=stage(it,n);
-      return '<article class="item '+s+'" data-id="'+it.id+'" data-s="'+s+'"><div class="st"><i class="dot"></i><span>'+LBL[s]+'</span></div><div class="time"></div><div class="bar"><i></i></div>'+
-        '<p class="kv"><span>User</span><b>'+(it.user?esc(it.user):'-')+'</b></p>'+
-        '<p class="kv"><span>รหัสผ่าน</span><b>'+(shown[it.id]?esc(it.pass):'••••••••')+'</b><button class="mini" data-a="show">'+(shown[it.id]?'ซ่อน':'แสดง')+'</button><button class="mini" data-a="copy">คัดลอก</button></p>'+
-        '<p class="kv"><span>รุ่นโทรศัพท์</span><b>'+(it.model?esc(it.model):'-')+'</b></p>'+
-        '<p class="kv"><span>เลขพัสดุ</span><input class="tin" placeholder="กรอกเลขพัสดุ" value="'+esc(it.track||'')+'"><button class="mini" data-a="track">เช็คพัสดุ</button></p>'+
-        '<small class="meta">บันทึกเมื่อ '+fmtDate(it.createdAt)+'</small><small class="meta">เปลี่ยนสถานะ</small><div class="acts">'+actions(s)+'</div></article>'}).join('');
+    var n=Date.now(),q=$('q').value.trim().toLowerCase();
+    var vis=items.filter(function(it){
+      if(!inF(stage(it,n)))return false;
+      return !q||(it.user||'').toLowerCase().indexOf(q)>-1||(it.track||'').toLowerCase().indexOf(q)>-1;
+    });
+    var open=vis.filter(function(it){return !it.doneAt}),fin=vis.filter(function(it){return it.doneAt}).sort(function(a,b){return b.doneAt-a.doneAt});
+    vis=open.concat(fin);
+    if(!vis.length){$('list').innerHTML='<p class="empty">'+(q?'ไม่พบรายการที่ค้นหา':'ยังไม่มีรายการ')+'</p>';update();return}
+    var sep=false;
+    $('list').innerHTML=vis.map(function(it){var s=stage(it,n),pre='';
+      if(it.doneAt&&!sep&&filter!=='done'){sep=true;pre='<div class="sep">สำเร็จแล้ว</div>'}
+      return pre+'<article class="item '+s+'" data-id="'+it.id+'" data-s="'+s+'">'+
+        '<div class="hd"><span class="st"><i class="dot"></i>'+LBL[s]+'</span><span class="time"></span></div><div class="bar"><i></i></div>'+
+        '<div class="fld">'+
+          '<div class="cell"><small>User</small><span class="cv"><b>'+(it.user?esc(it.user):'-')+'</b></span></div>'+
+          '<div class="cell"><small>รหัสผ่าน</small><span class="cv"><b>'+(shown[it.id]?esc(it.pass):'••••••••')+'</b><button class="mini" data-a="show">'+(shown[it.id]?'ซ่อน':'แสดง')+'</button><button class="mini" data-a="copy">คัดลอก</button></span></div>'+
+          '<div class="cell"><small>รุ่นโทรศัพท์</small><span class="cv"><b>'+(it.model?esc(it.model):'-')+'</b></span></div>'+
+          '<div class="cell"><small>เลขพัสดุ</small><span class="cv"><input class="tin" placeholder="กรอกเลขพัสดุ" value="'+esc(it.track||'')+'"><button class="mini" data-a="track">เช็คพัสดุ</button></span></div>'+
+        '</div>'+
+        '<div class="foot"><div class="acts">'+actions(s)+'</div><small class="meta">บันทึก '+fmtDate(it.createdAt)+'</small></div></article>'}).join('');
     update();
   }
   function update(){
@@ -385,6 +416,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     var id=e.target.closest('.item').dataset.id,it=items.filter(function(x){return x.id===id})[0];
     if(it){it.track=e.target.value.trim();save()}
   });
+  $('q').addEventListener('input',render);
   document.querySelector('#vault .tabs').addEventListener('click',function(e){var b=e.target.closest('button[data-f]');if(!b)return;filter=b.dataset.f;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});render()});
   /* หลายรายการ */
   function rows(keep){
