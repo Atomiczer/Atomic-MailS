@@ -150,6 +150,8 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
 .bsync{display:block;margin-top:6px;font-size:.8rem;opacity:.85}
 .chip{display:inline-block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle;padding:2px 10px;border-radius:999px;background:var(--moss-soft);color:var(--moss);font-size:.78rem;font-weight:500}
 #C_cfg{font-size:.8rem}
+.ver{max-width:1040px;margin:0 auto;text-align:center;color:var(--muted);font-size:.78rem;padding:4px 0 28px}
+@media print{.ver{display:none!important}}
 /* ledger */
 #ledger .lbar{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 #ledger .lbar input[type=search]{max-width:280px;text-align:center}
@@ -333,6 +335,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     <section class="card"><h3>ข้อมูล</h3><button class="danger" data-clear="vault-items-v2">ล้างข้อมูลคลังบัญชี</button><button class="danger" data-clear="ledger-v2">ล้างข้อมูลรายรับรายจ่าย</button></section>
   </div>
 </main>
+<footer class="ver">Atom.AI · เวอร์ชัน <b class="vn"></b></footer>
 </div>
 </div>
 <script>(function(){
@@ -653,6 +656,8 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   function show(n){if(!views[n])n='vault';for(var k in views)views[k].hidden=(k!==n);tabs.forEach(function(b){var on=b.dataset.v===n;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}
   tabs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.v);window.scrollTo(0,0);try{history.replaceState(null,'','#'+b.dataset.v)}catch(e){}})});
   show(location.hash.slice(1));
+  var VERSION='1.0.0',BUILD='11 พ.ย. 2569';
+  document.querySelectorAll('.vn').forEach(function(e){e.textContent=VERSION+' (อัปเดต '+BUILD+')'});
 })();</script>
 </body>
 </html>
