@@ -145,7 +145,15 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
 .sep{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.8rem;margin:16px 0 10px}
 .sep:before,.sep:after{content:"";flex:1;height:1px;background:var(--line)}
 @media (max-width:520px){.fld{grid-template-columns:1fr}}
+.tcar{width:auto;max-width:104px;height:30px;padding:0 6px;border-radius:8px;font-size:.8rem}
+.cv .tin{flex:1 1 80px;min-width:0;max-width:120px}
+.bsync{display:block;margin-top:6px;font-size:.8rem;opacity:.85}
+.chip{display:inline-block;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle;padding:2px 10px;border-radius:999px;background:var(--moss-soft);color:var(--moss);font-size:.78rem;font-weight:500}
+#C_cfg{font-size:.8rem}
 /* ledger */
+#ledger .lbar{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+#ledger .lbar input[type=search]{max-width:280px;text-align:center}
+#ledger tr.grp td{background:var(--moss-soft);color:var(--moss);font-weight:500;text-align:center}
 #ledger{max-width:1120px;margin:0 auto;padding:56px 22px 80px}
 #ledger h1{font-family:"Noto Serif Thai",Georgia,serif;font-weight:600;font-size:2rem;margin:0 0 6px;letter-spacing:-.01em}
 #ledger .sub{color:var(--muted);margin:0 0 28px;font-weight:300}
@@ -220,7 +228,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   <button data-v="settings" role="tab"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>ตั้งค่า</span></button>
 </aside>
 <div class="content">
-<header class="banner"><b>Atom<span>.AI</span></b><small>ระบบจัดการบัญชีและรายรับรายจ่าย</small></header>
+<header class="banner"><b>Atom<span>.AI</span></b><small>ระบบจัดการบัญชีและรายรับรายจ่าย</small><small class="bsync" id="C_dot">ข้อมูลอยู่ในเครื่องนี้ (ยังไม่ซิงก์)</small></header>
 <main id="vault">
   <h1>คลังบัญชี</h1>
   <p class="sub">เลือกสถานะ login ของแต่ละรายการ เมื่อ login แล้วจะนับถอยหลัง แล้วเปลี่ยนเป็นพร้อมใช้งาน</p>
@@ -231,6 +239,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     <div class="stat"><b id="nReady">0</b><span>พร้อมใช้งาน</span></div>
     <div class="stat"><b id="nShip">0</b><span>กำลังจัดส่ง</span></div>
     <div class="stat"><b id="nDone">0</b><span>สำเร็จ</span></div>
+    <div class="stat"><b id="nUsed">0</b><span>ใช้งานแล้ว</span></div>
   </div>
   <div class="vgrid">
     <form id="f" class="card" autocomplete="off" novalidate>
@@ -245,7 +254,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     </form>
     <section>
       <input id="q" class="search" type="search" placeholder="ค้นหาด้วยเลขพัสดุ หรือ User" aria-label="ค้นหา">
-      <div class="tabs"><button data-f="all" class="on">ทั้งหมด</button><button data-f="no">ยังไม่ login</button><button data-f="active">รอ / พร้อมใช้งาน</button><button data-f="ship">กำลังจัดส่ง</button><button data-f="done">สำเร็จ</button></div>
+      <div class="tabs"><button data-f="all" class="on">ทั้งหมด</button><button data-f="no">ยังไม่ login</button><button data-f="active">รอ / พร้อมใช้งาน</button><button data-f="ship">กำลังจัดส่ง</button><button data-f="done">สำเร็จ</button><button data-f="used">ใช้งานแล้ว</button></div>
       <div id="list"></div>
     </section>
   </div>
@@ -281,24 +290,27 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   </div>
 
   <form id="L_f" autocomplete="off" novalidate>
+    <label class="s2">Order (รหัส User)<input id="L_order" list="L_users" placeholder="เลือกหรือพิมพ์ User" autocomplete="off"></label>
+    <datalist id="L_users"></datalist>
     <label class="s2">รายการ<input id="L_name" type="text" placeholder="เช่น โอโม 99 บาท"></label>
     <label>จำนวน<input id="L_qty" type="number" inputmode="decimal" min="0" step="any" value="1"></label>
     <label>ราคารับ<input id="L_in" type="number" inputmode="decimal" min="0" step="any" placeholder="0"></label>
     <label>ราคาออก<input id="L_out" type="number" inputmode="decimal" min="0" step="any" placeholder="0"></label>
     <label>ชำระหรือยัง<select id="L_paid"><option value="0">ยัง</option><option value="1">ชำระแล้ว</option></select></label>
-    <label class="s2">อีเมล (ไม่บังคับ)<input id="L_email" type="email" placeholder="name@example.com"></label>
+    <label class="s4">อีเมล (ไม่บังคับ)<input id="L_email" type="email" placeholder="name@example.com"></label>
     <p class="err s4" id="L_err" role="alert"></p>
     <button class="main s4" type="submit">เพิ่มรายการ</button>
   </form>
 
+  <div class="lbar"><input type="search" id="L_q" placeholder="ค้นหา Order หรือรายการ" autocomplete="off"><label class="chk"><input type="checkbox" id="L_grp">จัดกลุ่มตาม Order</label></div>
   <div class="tabs">
     <button data-f="all" class="on">ทั้งหมด</button><button data-f="open">ยังไม่ชำระ</button><button data-f="done">ชำระแล้ว</button>
   </div>
   <div class="wrap">
     <table>
-      <thead><tr><th>ลำดับ</th><th>รายการ</th><th>จำนวน</th><th>ราคารับ</th><th>ราคาออก</th><th>รวม</th><th>ชำระหรือยัง</th><th></th></tr></thead>
+      <thead><tr><th>ลำดับ</th><th>Order</th><th>รายการ</th><th>จำนวน</th><th>ราคารับ</th><th>ราคาออก</th><th>รวม</th><th>ชำระหรือยัง</th><th></th></tr></thead>
       <tbody id="L_body"></tbody>
-      <tfoot><tr><td colspan="5" class="lab">คงเหลือ (ยังไม่ชำระ)</td><td class="sum" id="L_sum">0</td><td colspan="2"></td></tr></tfoot>
+      <tfoot><tr><td colspan="6" class="lab">คงเหลือ (ยังไม่ชำระ)</td><td class="sum" id="L_sum">0</td><td colspan="2"></td></tr></tfoot>
     </table>
   </div>
   <div class="report" id="L_report"></div>
@@ -310,6 +322,14 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     <section class="card"><h3>ธีม</h3><div class="seg3" id="S_theme"><button data-t="auto">อัตโนมัติ</button><button data-t="light">สว่าง</button><button data-t="dark">มืด</button></div></section>
     <section class="card"><h3>นับถอยหลังหลัง login</h3><label>จำนวนวัน<input id="S_days" type="number" min="0.01" step="any"></label></section>
     <section class="card"><h3>หัวรายงาน A4</h3><label>ชื่อรายงาน<input id="S_title" type="text"></label></section>
+    <section class="card"><h3>ซิงก์ข้อมูลข้ามอุปกรณ์</h3>
+      <p class="info" id="C_status" style="color:var(--muted);margin:0 0 10px">ยังไม่ได้เชื่อมต่อ ข้อมูลอยู่ในเครื่องนี้เท่านั้น</p>
+      <div id="C_setup"><label>Firebase config<textarea id="C_cfg" rows="5" placeholder="วางค่า firebaseConfig จาก Firebase Console"></textarea></label><button class="ghost" id="C_saveCfg" style="width:100%;margin-top:8px">บันทึกการเชื่อมต่อ</button></div>
+      <div id="C_auth" hidden><label>อีเมลสำหรับเข้าสู่ระบบ<input id="C_em" type="email" autocomplete="username"></label><label style="margin-top:8px">รหัสผ่าน (6 ตัวขึ้นไป)<input id="C_pw" type="password" autocomplete="current-password"></label>
+        <p class="err" id="C_err" role="alert"></p><div class="acts"><button class="btn pri" id="C_in">เข้าสู่ระบบ</button><button class="btn" id="C_up">สมัครใหม่</button></div></div>
+      <div id="C_on" hidden><button class="ghost" id="C_out" style="width:100%">ออกจากระบบ</button></div>
+      <button class="danger" id="C_chg" hidden>เปลี่ยน / ยกเลิกการเชื่อมต่อฐานข้อมูล</button>
+    </section>
     <section class="card"><h3>ข้อมูล</h3><button class="danger" data-clear="vault-items-v2">ล้างข้อมูลคลังบัญชี</button><button class="danger" data-clear="ledger-v2">ล้างข้อมูลรายรับรายจ่าย</button></section>
   </div>
 </main>
@@ -327,13 +347,88 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   document.getElementById('S_days').addEventListener('change',function(){var v=parseFloat(this.value);S.days=v>0?v:1;this.value=S.days;persist()});
   document.getElementById('S_title').addEventListener('change',function(){S.title=this.value.trim();persist()});
   document.querySelectorAll('[data-clear]').forEach(function(b){b.addEventListener('click',function(){
-    if(confirm('ลบข้อมูลทั้งหมดในหมวดนี้ ย้อนกลับไม่ได้ ยืนยันหรือไม่')){try{localStorage.removeItem(b.dataset.clear)}catch(e){}location.reload()}})});
+    if(confirm('ลบข้อมูลทั้งหมดในหมวดนี้ ย้อนกลับไม่ได้ ยืนยันหรือไม่')){ATOM.set(b.dataset.clear,[])}})});
+})();</script>
+<script>(function(){
+  var KEYS=['vault-items-v2','ledger-v2'],D={},L={},TS={},VER='10.12.2',BASE='https://www.gstatic.com/firebasejs/'+VER+'/';
+  var $=function(id){return document.getElementById(id)};
+  function ls(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function lset(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  var DEV=ls('atom-dev');if(!DEV){DEV=Math.random().toString(36).slice(2,10);lset('atom-dev',DEV)}
+  var fb=null,user=null,unsub=[];
+  ATOM.get=function(k){if(!D[k]){try{D[k]=JSON.parse(ls(k))}catch(e){}if(!Array.isArray(D[k]))D[k]=[];TS[k]=+ls('atom-ts-'+k)||0}return D[k]};
+  ATOM.on=function(k,f){(L[k]=L[k]||[]).push(f)};
+  function emit(k){(L[k]||[]).forEach(function(f){try{f(D[k])}catch(e){}})}
+  ATOM.set=function(k,a,remoteTs){ATOM.get(k);D[k]=a;lset(k,JSON.stringify(a));var t=remoteTs||Date.now();TS[k]=t;lset('atom-ts-'+k,String(t));if(!remoteTs)push(k);emit(k)};
+  function say(m,err){var d=$('C_dot');if(d)d.textContent=m;if(err&&$('C_err'))$('C_err').textContent=m}
+  function push(k){
+    if(!fb||!user)return;
+    fb.setDoc(fb.doc(fb.db,'users',user.uid,'data',k),{items:JSON.stringify(D[k]),updatedAt:TS[k],writer:DEV}).catch(function(e){say('ซิงก์ไม่สำเร็จ: '+(e.code||e.message),true)});
+  }
+  function attach(){
+    KEYS.forEach(function(k){
+      ATOM.get(k);var flag='atom-sync-'+user.uid+'-'+k;
+      unsub.push(fb.onSnapshot(fb.doc(fb.db,'users',user.uid,'data',k),function(snap){
+        if(snap.metadata&&snap.metadata.hasPendingWrites)return;
+        var first=!ls(flag);
+        if(!snap.exists()){lset(flag,'1');if(D[k].length)push(k);return}
+        var d=snap.data(),remote=[];try{remote=JSON.parse(d.items)||[]}catch(e){}
+        if(first){
+          lset(flag,'1');
+          var ids={};remote.forEach(function(x){ids[x.id]=1});
+          var extra=D[k].filter(function(x){return !ids[x.id]});
+          if(extra.length)ATOM.set(k,remote.concat(extra));else ATOM.set(k,remote,d.updatedAt||Date.now());
+          return;
+        }
+        if(d.writer===DEV)return;
+        if((d.updatedAt||0)>TS[k])ATOM.set(k,remote,d.updatedAt);
+        else if((d.updatedAt||0)<TS[k])push(k);
+      },function(e){say(e.code==='permission-denied'?'ยังไม่ได้ตั้ง Firestore Rules หรือยังไม่ได้เข้าสู่ระบบ':'เชื่อมต่อฐานข้อมูลไม่ได้: '+(e.code||e.message),true)}));
+    });
+  }
+  function ui(){
+    var cfg=!!ls('atom-fb-config');
+    $('C_setup').hidden=cfg;$('C_auth').hidden=!(cfg&&!user);$('C_on').hidden=!user;$('C_chg').hidden=!cfg;
+    $('C_status').textContent=user?'เชื่อมต่อแล้ว · '+user.email+' · ข้อมูลซิงก์ทุกอุปกรณ์ที่ล็อกอินบัญชีนี้':(cfg?'เชื่อมต่อฐานข้อมูลแล้ว กรุณาเข้าสู่ระบบเพื่อซิงก์':'ยังไม่ได้เชื่อมต่อ ข้อมูลอยู่ในเครื่องนี้เท่านั้น');
+    var d=$('C_dot');if(d&&!(d.dataset.err))d.textContent=user?'ซิงก์แล้ว · '+user.email:(cfg?'ยังไม่ได้เข้าสู่ระบบ (ข้อมูลยังไม่ซิงก์)':'ข้อมูลอยู่ในเครื่องนี้ (ยังไม่ซิงก์)');
+  }
+  ATOM._cloud={use:function(f,u){fb=f;user=u;unsub.forEach(function(x){x()});unsub=[];if(u)attach();ui()}};
+  function init(cfg){
+    Promise.all([import(BASE+'firebase-app.js'),import(BASE+'firebase-auth.js'),import(BASE+'firebase-firestore.js')]).then(function(m){
+      var app=m[0].initializeApp(cfg),auth=m[1].getAuth(app);
+      fb={auth:auth,A:m[1],db:m[2].getFirestore(app),doc:m[2].doc,setDoc:m[2].setDoc,onSnapshot:m[2].onSnapshot};
+      m[1].onAuthStateChanged(auth,function(u){user=u;unsub.forEach(function(x){x()});unsub=[];if(u)attach();ui()});
+    }).catch(function(e){say('โหลด Firebase ไม่สำเร็จ: '+(e.message||e),true)});
+  }
+  var EM={'auth/invalid-credential':'อีเมลหรือรหัสผ่านไม่ถูกต้อง','auth/wrong-password':'อีเมลหรือรหัสผ่านไม่ถูกต้อง','auth/user-not-found':'ไม่พบบัญชีนี้ ลองกด "สมัครใหม่"','auth/email-already-in-use':'อีเมลนี้สมัครไว้แล้ว ให้กด "เข้าสู่ระบบ"','auth/weak-password':'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร','auth/invalid-email':'รูปแบบอีเมลไม่ถูกต้อง','auth/operation-not-allowed':'ยังไม่ได้เปิดใช้ Email/Password ใน Firebase Authentication','auth/network-request-failed':'เชื่อมต่ออินเทอร์เน็ตไม่ได้','auth/unauthorized-domain':'โดเมนนี้ยังไม่ได้อนุญาตใน Firebase (Authentication > Settings > Authorized domains)'};
+  function auth(kind){
+    if(!fb)return;var em=$('C_em').value.trim(),pw=$('C_pw').value;$('C_err').textContent='';
+    if(!em||!pw){$('C_err').textContent='กรุณากรอกอีเมลและรหัสผ่าน';return}
+    fb.A[kind==='up'?'createUserWithEmailAndPassword':'signInWithEmailAndPassword'](fb.auth,em,pw).then(function(){$('C_pw').value=''}).catch(function(e){$('C_err').textContent=EM[e.code]||('เกิดข้อผิดพลาด: '+(e.code||e.message))});
+  }
+  function parseCfg(t){var o={};['apiKey','authDomain','projectId','storageBucket','messagingSenderId','appId','measurementId'].forEach(function(k){var m=t.match(new RegExp(k+'[\\x22\\x27]?\\s*:\\s*[\\x22\\x27]([^\\x22\\x27]+)[\\x22\\x27]'));if(m)o[k]=m[1]});return o}
+  $('C_saveCfg').addEventListener('click',function(){
+    var o=parseCfg($('C_cfg').value);
+    if(!o.apiKey||!o.projectId||!o.appId){$('C_err').textContent='';$('C_status').textContent='ค่า config ไม่ครบ ต้องมี apiKey, projectId และ appId';return}
+    lset('atom-fb-config',JSON.stringify(o));location.reload();
+  });
+  $('C_in').addEventListener('click',function(){auth('in')});
+  $('C_up').addEventListener('click',function(){auth('up')});
+  $('C_out').addEventListener('click',function(){if(fb)fb.A.signOut(fb.auth)});
+  $('C_chg').addEventListener('click',function(){if(confirm('ยกเลิกการเชื่อมต่อฐานข้อมูลในเครื่องนี้? ข้อมูลที่ซิงก์ไว้ยังอยู่ในคลาวด์และในเครื่อง')){try{localStorage.removeItem('atom-fb-config')}catch(e){}location.reload()}});
+  ui();
+  var cfg=null;try{cfg=JSON.parse(ls('atom-fb-config'))}catch(e){}
+  if(cfg&&cfg.apiKey)init(cfg);
 })();</script>
 <script>(function(){
   var KEY='vault-items-v2',items=[],shown={},filter='all',bn=10;
   var $=function(id){return document.getElementById(id)};
-  function load(){try{var r=localStorage.getItem(KEY);items=r?JSON.parse(r):[];if(!Array.isArray(items))items=[]}catch(e){items=[]}}
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
+  var LKEY='ledger-v2';
+  function load(){items=ATOM.get(KEY)}
+  function save(){ATOM.set(KEY,items)}
+  function orders(){var m={};ATOM.get(LKEY).forEach(function(o){var k=(o.order||'').trim().toLowerCase();if(!k)return;var x=m[k]=m[k]||{n:0};x.n++});return m}
+  function used(it,m){return !!(it.user&&m[it.user.trim().toLowerCase()])}
+  function chip(it,m){var o=it.user&&m[it.user.trim().toLowerCase()];return o?'<span class="chip">ใช้งานแล้ว · '+o.n+' รายการ order</span>':''}
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function pad(n){return String(n).padStart(2,'0')}
   function W(){return ATOM.days()*864e5}
@@ -341,7 +436,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   function fmtDate(t){return new Date(t).toLocaleString('th-TH',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
   var LBL={no:'ยังไม่ login',wait:'login แล้ว · กำลังรอ',ready:'พร้อมใช้งาน',ship:'กำลังจัดส่ง',done:'สำเร็จ ✓'};
   function stage(it,n){if(it.doneAt)return 'done';if(it.shipAt)return 'ship';if(!it.loginAt)return 'no';return it.loginAt+W()<=n?'ready':'wait'}
-  function inF(s){return filter==='all'||(filter==='active'?(s==='wait'||s==='ready'):s===filter)}
+  function inF(s,it,om){return filter==='all'||(filter==='used'?used(it,om):filter==='active'?(s==='wait'||s==='ready'):s===filter)}
   function mk(u,p,m,lg){var t=Date.now();return {id:'i'+t+Math.random().toString(36).slice(2,6),user:u,pass:p,model:m,createdAt:t,loginAt:lg?t:null,shipAt:null,doneAt:null}}
   function actions(s){
     var P=function(a,t){return '<button class="btn pri" data-a="'+a+'">'+t+'</button>'},B=function(a,t){return '<button class="btn" data-a="'+a+'">'+t+'</button>'},a='';
@@ -352,10 +447,19 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     if(s==='done')a=B('back','ย้อนกลับ');
     return a+'<button class="btn del" data-a="del">ลบ</button>';
   }
+  var CAR=[['auto','อัตโนมัติ'],['t17','17TRACK'],['thaipost','ไปรษณีย์ไทย'],['flash','Flash'],['kerry','Kerry']];
+  var URLS={t17:function(n){return 'https://t.17track.net/en#nums='+encodeURIComponent(n)},thaipost:'https://track.thailandpost.co.th/',flash:'https://www.flashexpress.co.th/tracking/',kerry:'https://th.kerryexpress.com/en/track/'};
+  function carrierFor(num,c){
+    if(c&&c!=='auto')return c;
+    if(/^[A-Za-z]{2}\d{9}TH$/i.test(num))return 'thaipost';
+    if(/^TH[0-9A-Z]{11,12}$/i.test(num))return 'flash';
+    return 't17';
+  }
+  function carSel(it){return '<select class="tcar" aria-label="ขนส่ง">'+CAR.map(function(c){return '<option value="'+c[0]+'"'+((it.carrier||'auto')===c[0]?' selected':'')+'>'+c[1]+'</option>'}).join('')+'</select>'}
   function render(){
-    var n=Date.now(),q=$('q').value.trim().toLowerCase();
+    var n=Date.now(),q=$('q').value.trim().toLowerCase(),om=orders();
     var vis=items.filter(function(it){
-      if(!inF(stage(it,n)))return false;
+      if(!inF(stage(it,n),it,om))return false;
       return !q||(it.user||'').toLowerCase().indexOf(q)>-1||(it.track||'').toLowerCase().indexOf(q)>-1;
     });
     var open=vis.filter(function(it){return !it.doneAt}),fin=vis.filter(function(it){return it.doneAt}).sort(function(a,b){return b.doneAt-a.doneAt});
@@ -365,12 +469,12 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     $('list').innerHTML=vis.map(function(it){var s=stage(it,n),pre='';
       if(it.doneAt&&!sep&&filter!=='done'){sep=true;pre='<div class="sep">สำเร็จแล้ว</div>'}
       return pre+'<article class="item '+s+'" data-id="'+it.id+'" data-s="'+s+'">'+
-        '<div class="hd"><span class="st"><i class="dot"></i>'+LBL[s]+'</span><span class="time"></span></div><div class="bar"><i></i></div>'+
+        '<div class="hd"><span class="st"><i class="dot"></i>'+LBL[s]+'</span>'+chip(it,om)+'<span class="time"></span></div><div class="bar"><i></i></div>'+
         '<div class="fld">'+
           '<div class="cell"><small>User</small><span class="cv"><b>'+(it.user?esc(it.user):'-')+'</b></span></div>'+
           '<div class="cell"><small>รหัสผ่าน</small><span class="cv"><b>'+(shown[it.id]?esc(it.pass):'••••••••')+'</b><button class="mini" data-a="show">'+(shown[it.id]?'ซ่อน':'แสดง')+'</button><button class="mini" data-a="copy">คัดลอก</button></span></div>'+
           '<div class="cell"><small>รุ่นโทรศัพท์</small><span class="cv"><b>'+(it.model?esc(it.model):'-')+'</b></span></div>'+
-          '<div class="cell"><small>เลขพัสดุ</small><span class="cv"><input class="tin" placeholder="กรอกเลขพัสดุ" value="'+esc(it.track||'')+'"><button class="mini" data-a="track">เช็คพัสดุ</button></span></div>'+
+          '<div class="cell"><small>เลขพัสดุ</small><span class="cv"><input class="tin" placeholder="กรอกเลขพัสดุ" value="'+esc(it.track||'')+'">'+carSel(it)+'<button class="mini" data-a="track">เช็คพัสดุ</button></span></div>'+
         '</div>'+
         '<div class="foot"><div class="acts">'+actions(s)+'</div><small class="meta">บันทึก '+fmtDate(it.createdAt)+'</small></div></article>'}).join('');
     update();
@@ -387,7 +491,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
       else if(s==='ship'){t.textContent='เริ่มจัดส่ง '+fmtDate(it.shipAt);b.style.width='100%'}
       else{t.textContent='สำเร็จเมื่อ '+fmtDate(it.doneAt);b.style.width='100%'}});
     if(ch){render();return}
-    $('nAll').textContent=items.length;$('nNo').textContent=c.no;$('nWait').textContent=c.wait;$('nReady').textContent=c.ready;$('nShip').textContent=c.ship;$('nDone').textContent=c.done;
+    var om=orders();$('nUsed').textContent=items.filter(function(it){return used(it,om)}).length;$('nAll').textContent=items.length;$('nNo').textContent=c.no;$('nWait').textContent=c.wait;$('nReady').textContent=c.ready;$('nShip').textContent=c.ship;$('nDone').textContent=c.done;
   }
   $('tg').addEventListener('click',function(){var p=$('pass'),h=p.type==='password';p.type=h?'text':'password';this.textContent=h?'ซ่อน':'แสดง'});
   $('f').addEventListener('submit',function(e){
@@ -403,7 +507,14 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     var a=b.dataset.a;
     if(a==='show'){shown[id]=!shown[id];render();return}
     if(a==='copy'){try{navigator.clipboard.writeText(it.pass).then(function(){b.textContent='คัดลอกแล้ว';setTimeout(function(){b.textContent='คัดลอก'},1200)},function(){})}catch(x){}return}
-    if(a==='track'){var inp=b.closest('.item').querySelector('.tin'),v=inp.value.trim();if(!v){inp.focus();return}it.track=v;save();window.open('https://t.17track.net/en#nums='+encodeURIComponent(v),'_blank','noopener');return}
+    if(a==='track'){
+      var row=b.closest('.item'),inp=row.querySelector('.tin'),v=inp.value.trim();
+      if(!v){inp.focus();return}
+      it.track=v;it.carrier=row.querySelector('.tcar').value;save();
+      var c=carrierFor(v,it.carrier),f=URLS[c],isFn=typeof f==='function',u=isFn?f(v):f;
+      if(!isFn){var t0=b.textContent;try{navigator.clipboard.writeText(v)}catch(x){}b.textContent='คัดลอกเลขแล้ว';setTimeout(function(){b.textContent=t0},1800)}
+      window.open(u,'_blank','noopener');return;
+    }
     if(a==='login')it.loginAt=it.loginAt?null:Date.now();
     else if(a==='ship')it.shipAt=Date.now();
     else if(a==='done')it.doneAt=Date.now();
@@ -412,9 +523,9 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     save();render();
   });
   $('list').addEventListener('change',function(e){
-    if(!e.target.classList.contains('tin'))return;
-    var id=e.target.closest('.item').dataset.id,it=items.filter(function(x){return x.id===id})[0];
-    if(it){it.track=e.target.value.trim();save()}
+    var el=e.target;if(!el.classList.contains('tin')&&!el.classList.contains('tcar'))return;
+    var row=el.closest('.item'),id=row.dataset.id,it=items.filter(function(x){return x.id===id})[0];
+    if(it){it.track=row.querySelector('.tin').value.trim();it.carrier=row.querySelector('.tcar').value;save()}
   });
   $('q').addEventListener('input',render);
   document.querySelector('#vault .tabs').addEventListener('click',function(e){var b=e.target.closest('button[data-f]');if(!b)return;filter=b.dataset.f;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});render()});
@@ -460,32 +571,43 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     if(!out.length){$('bErr').textContent='ยังไม่มีข้อมูลให้บันทึก';return}
     items=out.concat(items);save();$('bulk').close();render();
   });
+  ATOM.on(KEY,function(a){items=a;var ae=document.activeElement;if(!(ae&&ae.classList&&(ae.classList.contains('tin')||ae.classList.contains('tcar'))))render()});
+  ATOM.on(LKEY,function(){render()});
   load();render();setInterval(update,1000);
 })();</script>
 <script>(function(){
   var KEY='ledger-v2',items=[],filter='all';
   var $=function(id){return document.getElementById(id)};
-  function load(){try{var r=localStorage.getItem(KEY);items=r?JSON.parse(r):[];if(!Array.isArray(items))items=[]}catch(e){items=[]}}
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}}
+  function load(){items=ATOM.get(KEY)}
+  function save(){ATOM.set(KEY,items)}
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function fmt(n){return n.toLocaleString('th-TH',{maximumFractionDigits:2})}
 
   function render(){
-    var tot=0,paid=0,rest=0;
+    var tot=0,paid=0,rest=0,q=$('L_q').value.trim().toLowerCase(),grp=$('L_grp').checked;
     items.forEach(function(it){var s=it.out-it.in;tot+=s;if(it.paid)paid+=s;else rest+=s});
     $('L_tot').textContent=fmt(tot);$('L_paidv').textContent=fmt(paid);$('L_rest').textContent=fmt(rest);$('L_sum').textContent=fmt(rest);
-    var rows=[];
+    var list=[];
     items.forEach(function(it,i){
       var show=filter==='all'||(filter==='open'?!it.paid:it.paid);
-      if(!show)return;
-      rows.push('<tr data-id="'+it.id+'"><td>'+(i+1)+'</td>'+
-        '<td class="name">'+esc(it.name)+(it.email?'<small>'+esc(it.email)+'</small>':'')+'</td>'+
-        '<td>'+fmt(it.qty)+'</td><td class="in">'+fmt(it.in)+'</td><td class="out">'+fmt(it.out)+'</td>'+
-        '<td class="sum">'+fmt(it.out-it.in)+'</td>'+
-        '<td><button class="pay '+(it.paid?'yes':'no')+'" data-a="pay">'+(it.paid?'ชำระแล้ว':'ยัง')+'</button></td>'+
-        '<td><button class="del" data-a="del">ลบ</button></td></tr>');
+      if(show&&q&&((it.order||'')+' '+it.name).toLowerCase().indexOf(q)<0)show=false;
+      if(show)list.push({it:it,n:i+1});
     });
-    $('L_body').innerHTML=rows.length?rows.join(''):'<tr><td colspan="8" class="emp">ยังไม่มีรายการ</td></tr>';
+    function row(x){var it=x.it;return '<tr data-id="'+it.id+'"><td>'+x.n+'</td><td>'+(it.order?'<span class="chip">'+esc(it.order)+'</span>':'-')+'</td>'+
+      '<td class="name">'+esc(it.name)+(it.email?'<small>'+esc(it.email)+'</small>':'')+'</td>'+
+      '<td>'+fmt(it.qty)+'</td><td class="in">'+fmt(it.in)+'</td><td class="out">'+fmt(it.out)+'</td>'+
+      '<td class="sum">'+fmt(it.out-it.in)+'</td>'+
+      '<td><button class="pay '+(it.paid?'yes':'no')+'" data-a="pay">'+(it.paid?'ชำระแล้ว':'ยัง')+'</button></td>'+
+      '<td><button class="del" data-a="del">ลบ</button></td></tr>'}
+    var rows=[];
+    if(grp){
+      var g={},keys=[],nm={};
+      list.forEach(function(x){var lab=(x.it.order||'').trim()||'-',k=lab.toLowerCase();if(!g[k]){g[k]=[];keys.push(k);nm[k]=lab}g[k].push(x)});
+      keys.forEach(function(k){var sum=0,np=0;g[k].forEach(function(x){sum+=x.it.out-x.it.in;if(!x.it.paid)np++});
+        rows.push('<tr class="grp"><td colspan="9">'+(k==='-'?'ไม่มี Order':'Order '+esc(nm[k]))+' · '+g[k].length+' รายการ · รวม '+fmt(sum)+' · ยังไม่ชำระ '+np+' รายการ</td></tr>');
+        g[k].forEach(function(x){rows.push(row(x))})});
+    }else list.forEach(function(x){rows.push(row(x))});
+    $('L_body').innerHTML=rows.length?rows.join(''):'<tr><td colspan="9" class="emp">ยังไม่มีรายการ</td></tr>';
   }
 
   document.querySelector('#ledger .tabs').addEventListener('click',function(e){
@@ -498,7 +620,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     var name=$('L_name').value.trim(),qty=parseFloat($('L_qty').value),pin=parseFloat($('L_in').value),pout=parseFloat($('L_out').value),em=$('L_email').value.trim();
     var err=!name?'กรุณากรอกชื่อรายการ':!(qty>0)?'กรุณากรอกจำนวนมากกว่า 0':(isNaN(pin)||pin<0)?'กรุณากรอกราคารับ':(isNaN(pout)||pout<0)?'กรุณากรอกราคาออก':(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))?'กรุณากรอกอีเมลให้ถูกต้อง':'';
     $('L_err').textContent=err;if(err)return;
-    items.push({id:'t'+Date.now(),name:name,qty:qty,in:pin,out:pout,paid:$('L_paid').value==='1',email:em});
+    items.push({id:'t'+Date.now()+Math.random().toString(36).slice(2,5),order:$('L_order').value.trim(),name:name,qty:qty,in:pin,out:pout,paid:$('L_paid').value==='1',email:em});
     save();$('L_name').value='';$('L_in').value='';$('L_out').value='';$('L_email').value='';$('L_qty').value='1';render();
   });
 
@@ -512,15 +634,19 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   function buildReport(){
     var tot=0,paid=0,rest=0,rows='';
     items.forEach(function(it,i){var s=it.out-it.in;tot+=s;if(it.paid)paid+=s;else rest+=s;
-      rows+='<tr><td>'+(i+1)+'</td><td class="l">'+esc(it.name)+'</td><td>'+fmt(it.qty)+'</td><td>'+fmt(it.in)+'</td><td>'+fmt(it.out)+'</td><td>'+fmt(s)+'</td><td>'+(it.paid?'ชำระแล้ว':'ยัง')+'</td></tr>'});
+      rows+='<tr><td>'+(i+1)+'</td><td>'+esc(it.order||'-')+'</td><td class="l">'+esc(it.name)+'</td><td>'+fmt(it.qty)+'</td><td>'+fmt(it.in)+'</td><td>'+fmt(it.out)+'</td><td>'+fmt(s)+'</td><td>'+(it.paid?'ชำระแล้ว':'ยัง')+'</td></tr>'});
     $('L_report').innerHTML='<h1>'+esc(ATOM.title())+'</h1><p class="meta">พิมพ์เมื่อ '+new Date().toLocaleString('th-TH',{dateStyle:'long',timeStyle:'short'})+'</p>'+
-      '<table><thead><tr><th>ลำดับ</th><th>รายการ</th><th>จำนวน</th><th>ราคารับ</th><th>ราคาออก</th><th>รวม</th><th>ชำระหรือยัง</th></tr></thead><tbody>'+(rows||'<tr><td colspan="7">ไม่มีรายการ</td></tr>')+'</tbody></table>'+
+      '<table><thead><tr><th>ลำดับ</th><th>Order</th><th>รายการ</th><th>จำนวน</th><th>ราคารับ</th><th>ราคาออก</th><th>รวม</th><th>ชำระหรือยัง</th></tr></thead><tbody>'+(rows||'<tr><td colspan="8">ไม่มีรายการ</td></tr>')+'</tbody></table>'+
       '<div class="tot"><span>รวมทั้งหมด '+fmt(tot)+'</span><span>ชำระแล้ว '+fmt(paid)+'</span><span>คงเหลือ '+fmt(rest)+'</span></div>';
   }
   $('L_print').addEventListener('click',function(){buildReport();window.print()});
   window.addEventListener('beforeprint',buildReport);
 
-  load();render();
+  function users(){var seen={},o='';ATOM.get('vault-items-v2').forEach(function(v){var u=(v.user||'').trim();if(u&&!seen[u.toLowerCase()]){seen[u.toLowerCase()]=1;o+='<option value="'+esc(u)+'">'}});$('L_users').innerHTML=o}
+  ATOM.on('vault-items-v2',users);
+  ATOM.on(KEY,function(a){items=a;render()});
+  $('L_q').addEventListener('input',render);$('L_grp').addEventListener('change',render);
+  users();load();render();
 })();</script>
 <script>(function(){
   var tabs=document.querySelectorAll('.side button'),views={vault:document.getElementById('vault'),ledger:document.getElementById('ledger'),settings:document.getElementById('settings')};
