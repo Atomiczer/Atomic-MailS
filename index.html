@@ -62,7 +62,7 @@ h3{margin:0 0 12px;font-weight:500}
 .banner b{display:block;font-family:"Noto Serif Thai",Georgia,serif;font-size:2.2rem;letter-spacing:.02em;line-height:1.2}
 .banner b span{opacity:.8}
 .banner small{opacity:.9;font-weight:300}
-#vault,#ledger,#settings{max-width:1040px;margin:0 auto;padding:28px 0 60px;text-align:center}
+#vault,#ledger,#settings,#track{max-width:1040px;margin:0 auto;padding:28px 0 60px;text-align:center}
 .card,.item,.stat{background:var(--surface);border:1px solid var(--line);border-radius:16px}
 .card{padding:22px;box-shadow:0 1px 2px rgba(60,50,30,.05),0 10px 24px -14px rgba(60,50,30,.2)}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:28px}
@@ -153,7 +153,39 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
 .ver{max-width:1040px;margin:0 auto;text-align:center;color:var(--muted);font-size:.78rem;padding:4px 0 28px}
 @media print{.ver{display:none!important}}
 .cv .mdl{flex:1 1 90px;min-width:0;max-width:150px;height:30px;padding:0 10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;font-size:.85rem;text-align:center}
+.th2{font-family:"Noto Serif Thai",Georgia,serif;font-weight:400;font-size:1.15rem;margin:28px 0 12px}
+.tbox{max-width:640px;margin:0 auto 20px}
+.trow{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 auto 8px;max-width:760px}
+.tn{font-weight:500;font-variant-numeric:tabular-nums;word-break:break-all}
+.trow select{width:auto;padding:5px 8px;font-size:.84rem}
+.trow .btn,.ccard .btn{padding:5px 14px;font-size:.84rem}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.ccard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.ccard b{font-weight:500}
+.tnote{color:var(--muted);font-size:.8rem;max-width:640px;margin:20px auto 0}
+.tstat{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:.85rem}
+.tlink{display:inline-flex;gap:8px;align-items:center;color:var(--ink);text-align:left;max-width:100%}
+.tlink span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px}
+.tb{font-weight:500}
+.s-Delivered{color:var(--moss)}
+.s-InTransit,.s-OutForDelivery,.s-InfoReceived,.s-AvailableForPickup{color:var(--ochre)}
+.s-DeliveryFailure,.s-Exception{color:var(--danger)}
+.s-NotFound,.s-Expired{color:var(--muted)}
+.tst{flex-basis:100%;text-align:center;font-size:.85rem}
+.muted{color:var(--muted)}
+.tl{text-align:left;max-height:50vh;overflow:auto;margin:14px 0}
+.ev{border-left:2px solid var(--line);padding:0 0 12px 14px;margin-left:6px;position:relative}
+.ev:before{content:"";position:absolute;left:-6px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--moss)}
+.ev small{display:block;color:var(--muted)}
+.mini:disabled{opacity:.6;cursor:default}
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;text-align:center}
+.egrid .e2{grid-column:1/-1}
+.inote{margin:10px 0 0;color:var(--muted);font-size:.85rem}
+@media (max-width:520px){.egrid{grid-template-columns:1fr}}
 /* ledger */
+#ledger td.rb{white-space:nowrap}
+#ledger .ed{font-size:.8rem;color:var(--ink);margin-right:8px;padding:2px 10px;border:1px solid var(--line);border-radius:999px}
+#ledger .ed:hover{border-color:var(--muted)}
 #ledger td input.mdl{width:100%;min-width:90px;padding:5px 8px;font-size:.85rem;text-align:center;background:var(--surface)}
 #ledger .lbar{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 #ledger .lbar input[type=search]{max-width:280px;text-align:center}
@@ -211,7 +243,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
 @media print{
  @page{size:A4;margin:14mm}
  html,body{background:#fff!important;color:#000!important}
- .side,.banner,#vault,#settings,#ledger>*:not(.report){display:none!important}
+ .side,.banner,#vault,#settings,#track,#ledger>*:not(.report){display:none!important}
  .shell{display:block}.content{padding:0}
  #ledger{display:block;max-width:none;padding:0}
  .report{display:block;color:#000;background:#fff;font-size:11pt}
@@ -231,6 +263,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
 <aside class="side" role="tablist">
   <button data-v="vault" class="on" role="tab"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>คลังบัญชี</span></button>
   <button data-v="ledger" role="tab"><svg class="ic" viewBox="0 0 24 24"><path d="M5 4h14v16l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 9h6M9 13h6"/></svg><span>รายรับรายจ่าย</span></button>
+  <button data-v="track" role="tab"><svg class="ic" viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg><span>เช็คพัสดุ</span></button>
   <button data-v="settings" role="tab"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg><span>ตั้งค่า</span></button>
 </aside>
 <div class="content">
@@ -254,6 +287,8 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
       <label>รหัสผ่าน<span class="pw"><input id="pass" type="password"><button type="button" id="tg">แสดง</button></span></label>
       <label>รุ่นโทรศัพท์<input id="model" type="text" placeholder="เช่น iPhone 13"></label>
       <label>สถานะ login<select id="login"><option value="0">ยังไม่ login</option><option value="1">login แล้ว</option></select></label>
+      <label>เลขพัสดุ<input id="trk" type="text" placeholder="ไม่บังคับ" autocomplete="off"></label>
+      <label>หมายเหตุ<input id="vnote" type="text" placeholder="ไม่บังคับ" autocomplete="off"></label>
       <p class="err" id="err" role="alert"></p>
       <button class="main" type="submit">บันทึกรายการ</button>
       <button class="ghost" type="button" id="bulkBtn">เพิ่มหลายรายการ (10-20)</button>
@@ -269,7 +304,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     <details class="paste"><summary>วางข้อมูลเป็นข้อความ แล้วคัดแยกอัตโนมัติ</summary>
       <textarea id="bText" rows="5" placeholder="วางข้อมูลทีละบรรทัด คั่นด้วย Tab, | , ; , คอมมา หรือเว้นวรรค เช่น&#10;user1 | pass1 | iPhone 13&#10;user2, pass2, Galaxy S22"></textarea>
       <div class="pbar">
-        <label>ลำดับคอลัมน์<select id="bOrder"><option value="upm">User, รหัสผ่าน, รุ่น</option><option value="pum">รหัสผ่าน, User, รุ่น</option><option value="up">User, รหัสผ่าน</option><option value="pm">รหัสผ่าน, รุ่น</option></select></label>
+        <label>ลำดับคอลัมน์<select id="bOrder"><option value="upm">User, รหัสผ่าน, รุ่น</option><option value="upmt">User, รหัสผ่าน, รุ่น, เลขพัสดุ</option><option value="pum">รหัสผ่าน, User, รุ่น</option><option value="up">User, รหัสผ่าน</option><option value="pm">รหัสผ่าน, รุ่น</option></select></label>
         <label>สถานะ<select id="bPLogin"><option value="0">ยังไม่ login</option><option value="1">login แล้ว</option></select></label>
         <label class="chk"><input type="checkbox" id="bHead">ข้ามบรรทัดแรก</label>
         <button class="btn pri" id="bParse">คัดแยกข้อมูล</button>
@@ -277,10 +312,24 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     </details>
     <div class="bar2"><span>จำนวนแถว</span><button data-n="10" class="on">10</button><button data-n="15">15</button><button data-n="20">20</button>
       <label style="flex-direction:row;align-items:center">ตั้งทุกแถว<select id="bAll"><option value="">เลือก</option><option value="0">ยังไม่ login</option><option value="1">login แล้ว</option></select></label></div>
-    <div class="bwrap"><table><thead><tr><th>#</th><th>User</th><th>รหัสผ่าน</th><th>รุ่นโทรศัพท์</th><th>สถานะ</th></tr></thead><tbody id="bBody"></tbody></table></div>
+    <div class="bwrap"><table><thead><tr><th>#</th><th>User</th><th>รหัสผ่าน</th><th>รุ่นโทรศัพท์</th><th>เลขพัสดุ</th><th>สถานะ</th></tr></thead><tbody id="bBody"></tbody></table></div>
     <p id="bInfo" class="info"></p>
     <p class="err" id="bErr" role="alert"></p>
     <div class="acts"><button class="btn" id="bCancel">ยกเลิก</button><button class="btn pri" id="bSave">บันทึกทั้งหมด</button></div>
+  </dialog>
+  <dialog id="vedit">
+    <h2 style="margin:0">แก้ไขรายการ</h2>
+    <div class="egrid">
+      <label>User<input id="E_user" autocomplete="off"></label>
+      <label>รหัสผ่าน<input id="E_pass" autocomplete="off"></label>
+      <label>รุ่นโทรศัพท์<input id="E_model" autocomplete="off"></label>
+      <label>สถานะ login<select id="E_login"><option value="0">ยังไม่ login</option><option value="1">login แล้ว</option></select></label>
+      <label>เลขพัสดุ<input id="E_track" autocomplete="off"></label>
+      <label>ขนส่ง<select id="E_car"></select></label>
+      <label class="e2">หมายเหตุ<input id="E_note" autocomplete="off"></label>
+    </div>
+    <p class="err" id="E_err" role="alert"></p>
+    <div class="acts"><button class="btn" id="E_cancel">ยกเลิก</button><button class="btn pri" id="E_save">บันทึก</button></div>
   </dialog>
 </main>
 <main id="ledger" hidden>
@@ -306,11 +355,14 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     <label>รุ่นโทรศัพท์<input id="L_model" type="text" placeholder="เช่น iPhone 13" autocomplete="off"></label>
     <label>จัดส่งหรือยัง<select id="L_ship"><option value="0">ยัง</option><option value="1">จัดส่งแล้ว</option></select></label>
     <label class="s2">อีเมล (ไม่บังคับ)<input id="L_email" type="email" placeholder="name@example.com"></label>
+    <label class="s2">เลขพัสดุ<input id="L_track" type="text" placeholder="ไม่บังคับ" autocomplete="off"></label>
+    <label>ขนส่ง<select id="L_car"></select></label>
+    <label>หมายเหตุ<input id="L_note" type="text" autocomplete="off"></label>
     <p class="err s4" id="L_err" role="alert"></p>
     <button class="main s4" type="submit">เพิ่มรายการ</button>
   </form>
 
-  <div class="lbar"><input type="search" id="L_q" placeholder="ค้นหา Order, รุ่น หรือรายการ" autocomplete="off"><label class="chk"><input type="checkbox" id="L_grp">จัดกลุ่มตาม Order</label></div>
+  <div class="lbar"><input type="search" id="L_q" placeholder="ค้นหา Order, รุ่น, เลขพัสดุ หรือรายการ" autocomplete="off"><label class="chk"><input type="checkbox" id="L_grp">จัดกลุ่มตาม Order</label></div>
   <div class="tabs">
     <button data-f="all" class="on">ทั้งหมด</button><button data-f="open">ยังไม่ชำระ</button><button data-f="done">ชำระแล้ว</button>
   </div>
@@ -321,7 +373,43 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
       <tfoot><tr><td colspan="7" class="lab">คงเหลือ (ยังไม่ชำระ)</td><td class="sum" id="L_sum">0</td><td colspan="3"></td></tr></tfoot>
     </table>
   </div>
+  <dialog id="ledit">
+    <h2 style="margin:0">แก้ไขรายการ</h2>
+    <div class="egrid">
+      <label>Order (รหัส User)<input id="LE_order" list="L_users" autocomplete="off"></label>
+      <label>รุ่นโทรศัพท์<input id="LE_model" autocomplete="off"></label>
+      <label class="e2">รายการ<input id="LE_name" autocomplete="off"></label>
+      <label>จำนวน<input id="LE_qty" type="number" step="any" min="0"></label>
+      <label>ราคารับ<input id="LE_in" type="number" step="any" min="0"></label>
+      <label>ราคาออก<input id="LE_out" type="number" step="any" min="0"></label>
+      <label>ชำระหรือยัง<select id="LE_paid"><option value="0">ยัง</option><option value="1">ชำระแล้ว</option></select></label>
+      <label>จัดส่งแล้ว<select id="LE_ship"><option value="0">ยัง</option><option value="1">จัดส่งแล้ว</option></select></label>
+      <label>เลขพัสดุ<input id="LE_track" autocomplete="off"></label>
+      <label>ขนส่ง<select id="LE_car"></select></label>
+      <label>หมายเหตุ<input id="LE_note" autocomplete="off"></label>
+      <label>อีเมล<input id="LE_email" type="email" autocomplete="off"></label>
+    </div>
+    <p class="err" id="LE_err" role="alert"></p>
+    <div class="acts"><button class="btn" id="LE_cancel">ยกเลิก</button><button class="btn pri" id="LE_save">บันทึก</button></div>
+  </dialog>
   <div class="report" id="L_report"></div>
+</main>
+<main id="track" hidden>
+  <h1>เช็คพัสดุ</h1>
+  <p class="sub">เช็คพัสดุขนส่งในไทย วางเลขพัสดุได้หลายเลข (บรรทัดละ 1 เลข) ระบบเดาขนส่งให้ แล้วเปิดหน้าเช็คของขนส่งนั้น</p>
+  <section class="card tbox">
+    <label>เลขพัสดุ<textarea id="T_nums" rows="4" placeholder="วางเลขพัสดุ บรรทัดละ 1 เลข" spellcheck="false"></textarea></label>
+    <div class="pbar">
+      <label>ขนส่ง<select id="T_car"></select></label>
+      <button class="btn pri" id="T_go">ตรวจสอบ</button>
+      <button class="btn" id="T_vault">ดึงเลขจากคลังบัญชี / รายรับรายจ่าย</button>
+    </div>
+    <p class="info" id="T_msg"></p>
+  </section>
+  <div id="T_res"></div>
+  <h2 class="th2">ขนส่งในไทย</h2>
+  <div class="cgrid" id="T_cars"></div>
+  <p class="tnote">หน้านี้เปิดหน้าเช็คพัสดุของขนส่งให้ ปุ่ม 17TRACK ใส่เลขพัสดุให้เองได้เลย ส่วนปุ่มเว็บขนส่งจะคัดลอกเลขให้ แล้วกดวางในช่องค้นหา</p>
 </main>
 <main id="settings" hidden>
   <h1>ตั้งค่า</h1>
@@ -430,6 +518,27 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   if(cfg&&cfg.apiKey)init(cfg);
 })();</script>
 <script>(function(){
+  var list=[['thaipost','ไปรษณีย์ไทย','https://track.thailandpost.co.th/'],['flash','Flash Express','https://www.flashexpress.co.th/tracking/'],['kerry','Kerry Express','https://th.kerryexpress.com/en/track/'],['jt','J&T Express','https://www.jtexpress.co.th/'],['spx','SPX Express (Shopee)','https://spx.co.th/'],['ninja','Ninja Van','https://www.ninjavan.co/th-th/tracking'],['best','Best Express','https://www.best-inc.co.th/'],['dhl','DHL eCommerce','https://www.dhl.com/th-en/home/tracking.html'],['scg','SCG Express','https://www.scgexpress.co.th/'],['nim','NIM Express','https://www.nimexpress.com/']];
+  var urls={t17:function(n){return 'https://t.17track.net/en#nums='+encodeURIComponent(n)}};
+  list.forEach(function(c){urls[c[0]]=c[2]});
+  ATOM.cars={list:list,urls:urls,
+    options:[['auto','อัตโนมัติ'],['t17','17TRACK']].concat(list.map(function(c){return [c[0],c[1]]})),
+    pick:function(n,c){
+      if(c&&c!=='auto')return c;
+      if(/^[A-Za-z]{2}\d{9}TH$/i.test(n))return 'thaipost';
+      if(/^SPXTH/i.test(n))return 'spx';
+      if(/^TH[0-9A-Z]{11,12}$/i.test(n))return 'flash';
+      return 't17';
+    },
+    opts:function(v){return ATOM.cars.options.map(function(c){return '<option value="'+c[0]+'"'+((v||'auto')===c[0]?' selected':'')+'>'+c[1].replace(/&/g,'&amp;')+'</option>'}).join('')},
+    open:function(num,carrier,btn){
+      var c=ATOM.cars.pick(num,carrier),f=urls[c],fn=typeof f==='function',u=fn?f(num):f;
+      if(!fn){try{navigator.clipboard.writeText(num)}catch(e){}if(btn){var t0=btn.textContent;btn.textContent='คัดลอกเลขแล้ว';setTimeout(function(){btn.textContent=t0},1800)}}
+      window.open(u,'_blank','noopener');
+    }
+  };
+})();</script>
+<script>(function(){
   var KEY='vault-items-v2',items=[],shown={},filter='all',bn=10;
   var $=function(id){return document.getElementById(id)};
   var LKEY='ledger-v2';
@@ -446,7 +555,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   var LBL={no:'ยังไม่ login',wait:'login แล้ว · กำลังรอ',ready:'พร้อมใช้งาน',ship:'กำลังจัดส่ง',done:'สำเร็จ ✓'};
   function stage(it,n){if(it.doneAt)return 'done';if(it.shipAt)return 'ship';if(!it.loginAt)return 'no';return it.loginAt+W()<=n?'ready':'wait'}
   function inF(s,it,om){return filter==='all'||(filter==='used'?used(it,om):filter==='active'?(s==='wait'||s==='ready'):s===filter)}
-  function mk(u,p,m,lg){var t=Date.now();return {id:'i'+t+Math.random().toString(36).slice(2,6),user:u,pass:p,model:m,createdAt:t,loginAt:lg?t:null,shipAt:null,doneAt:null}}
+  function mk(u,p,m,lg,tr,nt){var t=Date.now();return {id:'i'+t+Math.random().toString(36).slice(2,6),user:u,pass:p,model:m,track:tr||'',note:nt||'',createdAt:t,loginAt:lg?t:null,shipAt:null,doneAt:null}}
   function actions(s){
     var P=function(a,t){return '<button class="btn pri" data-a="'+a+'">'+t+'</button>'},B=function(a,t){return '<button class="btn" data-a="'+a+'">'+t+'</button>'},a='';
     if(s==='no')a=P('login','login แล้ว')+B('ship','กำลังจัดส่ง')+B('done','สำเร็จแล้ว');
@@ -454,16 +563,9 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     if(s==='ready')a=P('ship','กำลังจัดส่ง')+B('done','สำเร็จแล้ว')+B('login','ยกเลิก login');
     if(s==='ship')a=P('done','สำเร็จแล้ว')+B('back','ย้อนกลับ');
     if(s==='done')a=B('back','ย้อนกลับ');
-    return a+'<button class="btn del" data-a="del">ลบ</button>';
+    return a+'<button class="btn" data-a="edit">แก้ไข</button><button class="btn del" data-a="del">ลบ</button>';
   }
-  var CAR=[['auto','อัตโนมัติ'],['t17','17TRACK'],['thaipost','ไปรษณีย์ไทย'],['flash','Flash'],['kerry','Kerry']];
-  var URLS={t17:function(n){return 'https://t.17track.net/en#nums='+encodeURIComponent(n)},thaipost:'https://track.thailandpost.co.th/',flash:'https://www.flashexpress.co.th/tracking/',kerry:'https://th.kerryexpress.com/en/track/'};
-  function carrierFor(num,c){
-    if(c&&c!=='auto')return c;
-    if(/^[A-Za-z]{2}\d{9}TH$/i.test(num))return 'thaipost';
-    if(/^TH[0-9A-Z]{11,12}$/i.test(num))return 'flash';
-    return 't17';
-  }
+  var CAR=ATOM.cars.options,URLS=ATOM.cars.urls,carrierFor=ATOM.cars.pick;
   function carSel(it){return '<select class="tcar" aria-label="ขนส่ง">'+CAR.map(function(c){return '<option value="'+c[0]+'"'+((it.carrier||'auto')===c[0]?' selected':'')+'>'+c[1]+'</option>'}).join('')+'</select>'}
   function render(){
     var n=Date.now(),q=$('q').value.trim().toLowerCase(),om=orders();
@@ -485,7 +587,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
           '<div class="cell"><small>รุ่นโทรศัพท์</small><span class="cv"><input class="mdl" placeholder="กรอกรุ่น" value="'+esc(it.model||'')+'"></span></div>'+
           '<div class="cell"><small>เลขพัสดุ</small><span class="cv"><input class="tin" placeholder="กรอกเลขพัสดุ" value="'+esc(it.track||'')+'">'+carSel(it)+'<button class="mini" data-a="track">เช็คพัสดุ</button></span></div>'+
         '</div>'+
-        '<div class="foot"><div class="acts">'+actions(s)+'</div><small class="meta">บันทึก '+fmtDate(it.createdAt)+'</small></div></article>'}).join('');
+        (it.note?'<p class="inote">'+esc(it.note)+'</p>':'')+'<div class="foot"><div class="acts">'+actions(s)+'</div><small class="meta">บันทึก '+fmtDate(it.createdAt)+'</small></div></article>'}).join('');
     update();
   }
   function update(){
@@ -507,7 +609,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     e.preventDefault();
     if(!$('pass').value){$('err').textContent='กรุณากรอกรหัสผ่าน';return}
     $('err').textContent='';
-    items.unshift(mk($('user').value.trim(),$('pass').value,$('model').value.trim(),$('login').value==='1'));
+    items.unshift(mk($('user').value.trim(),$('pass').value,$('model').value.trim(),$('login').value==='1',$('trk').value.trim(),$('vnote').value.trim()));
     save();this.reset();$('pass').type='password';$('tg').textContent='แสดง';render();
   });
   $('list').addEventListener('click',function(e){
@@ -516,6 +618,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     var a=b.dataset.a;
     if(a==='show'){shown[id]=!shown[id];render();return}
     if(a==='copy'){try{navigator.clipboard.writeText(it.pass).then(function(){b.textContent='คัดลอกแล้ว';setTimeout(function(){b.textContent='คัดลอก'},1200)},function(){})}catch(x){}return}
+    if(a==='edit'){openEdit(it);return}
     if(a==='track'){
       var row=b.closest('.item'),inp=row.querySelector('.tin'),v=inp.value.trim();
       if(!v){inp.focus();return}
@@ -538,10 +641,25 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   });
   $('q').addEventListener('input',render);
   document.querySelector('#vault .tabs').addEventListener('click',function(e){var b=e.target.closest('button[data-f]');if(!b)return;filter=b.dataset.f;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});render()});
+  var eid=null;
+  function openEdit(it){
+    eid=it.id;$('E_user').value=it.user||'';$('E_pass').value=it.pass||'';$('E_model').value=it.model||'';
+    $('E_login').value=it.loginAt?'1':'0';$('E_track').value=it.track||'';$('E_car').innerHTML=ATOM.cars.opts(it.carrier);$('E_note').value=it.note||'';
+    $('E_err').textContent='';$('vedit').showModal();
+  }
+  $('E_cancel').addEventListener('click',function(){$('vedit').close()});
+  $('E_save').addEventListener('click',function(){
+    var it=items.filter(function(x){return x.id===eid})[0];if(!it){$('vedit').close();return}
+    if(!$('E_pass').value){$('E_err').textContent='กรุณากรอกรหัสผ่าน';return}
+    it.user=$('E_user').value.trim();it.pass=$('E_pass').value;it.model=$('E_model').value.trim();
+    it.track=$('E_track').value.trim();it.carrier=$('E_car').value;it.note=$('E_note').value.trim();
+    var lg=$('E_login').value==='1';if(lg&&!it.loginAt)it.loginAt=Date.now();if(!lg)it.loginAt=null;
+    save();$('vedit').close();render();
+  });
   /* หลายรายการ */
   function rows(keep){
     var old=keep?[].map.call($('bBody').rows,function(r){return [].map.call(r.querySelectorAll('[data-k]'),function(x){return x.value})}):[],h='';
-    for(var i=1;i<=bn;i++)h+='<tr><td>'+i+'</td><td><input data-k="u" placeholder="user"></td><td><input data-k="p" placeholder="รหัสผ่าน"></td><td><input data-k="m" placeholder="รุ่น"></td><td><select data-k="l"><option value="0">ยังไม่ login</option><option value="1">login แล้ว</option></select></td></tr>';
+    for(var i=1;i<=bn;i++)h+='<tr><td>'+i+'</td><td><input data-k="u" placeholder="user"></td><td><input data-k="p" placeholder="รหัสผ่าน"></td><td><input data-k="m" placeholder="รุ่น"></td><td><input data-k="t" placeholder="เลขพัสดุ"></td><td><select data-k="l"><option value="0">ยังไม่ login</option><option value="1">login แล้ว</option></select></td></tr>';
     $('bBody').innerHTML=h;
     old.forEach(function(v,i){var r=$('bBody').rows[i];if(r)r.querySelectorAll('[data-k]').forEach(function(x,j){x.value=v[j]})});
   }
@@ -556,13 +674,13 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     lines.slice(0,200).forEach(function(l){
       var t=l.trim(),p=l.indexOf('\t')>-1?l.split('\t'):l.indexOf('|')>-1?l.split('|'):l.indexOf(';')>-1?l.split(';'):l.indexOf(',')>-1?l.split(','):/\s{2,}/.test(t)?t.split(/\s{2,}/):t.split(/\s+/);
       p=p.map(function(x){return x.trim()});
-      var o={u:'',p:'',m:''};
+      var o={u:'',p:'',m:'',t:''};
       map.forEach(function(k,i){if(i<p.length)o[k]=(i===map.length-1)?p.slice(i).join(' '):p[i]});
       res.push(o);
     });
     bn=Math.max(10,res.length);rows(false);
     res.forEach(function(v,i){var r=$('bBody').rows[i];
-      r.querySelector('[data-k="u"]').value=v.u;r.querySelector('[data-k="p"]').value=v.p;r.querySelector('[data-k="m"]').value=v.m;r.querySelector('[data-k="l"]').value=pl});
+      r.querySelector('[data-k="u"]').value=v.u;r.querySelector('[data-k="p"]').value=v.p;r.querySelector('[data-k="m"]').value=v.m;r.querySelector('[data-k="t"]').value=v.t;r.querySelector('[data-k="l"]').value=pl});
     document.querySelectorAll('.bar2 [data-n]').forEach(function(x){x.classList.toggle('on',+x.dataset.n===bn)});
     $('bInfo').textContent='คัดแยกได้ '+res.length+' รายการ ตรวจสอบในตารางแล้วกด "บันทึกทั้งหมด"'+(lines.length>200?' (จำกัดที่ 200 แถว)':'');
     $('bErr').textContent='';
@@ -571,10 +689,10 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   $('bSave').addEventListener('click',function(){
     var out=[],bad=0;
     [].forEach.call($('bBody').rows,function(r,i){
-      var g=function(k){return r.querySelector('[data-k="'+k+'"]').value.trim()},u=g('u'),p=r.querySelector('[data-k="p"]').value,m=g('m');
-      if(!u&&!p&&!m)return;
+      var g=function(k){return r.querySelector('[data-k="'+k+'"]').value.trim()},u=g('u'),p=r.querySelector('[data-k="p"]').value,m=g('m'),tr=g('t');
+      if(!u&&!p&&!m&&!tr)return;
       if(!p&&!bad)bad=i+1;
-      out.push(mk(u,p,m,g('l')==='1'));
+      out.push(mk(u,p,m,g('l')==='1',tr));
     });
     if(bad){$('bErr').textContent='แถวที่ '+bad+' ยังไม่ใส่รหัสผ่าน';return}
     if(!out.length){$('bErr').textContent='ยังไม่มีข้อมูลให้บันทึก';return}
@@ -583,6 +701,7 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   ATOM.on(KEY,function(a){items=a;var ae=document.activeElement;if(!(ae&&ae.classList&&(ae.classList.contains('tin')||ae.classList.contains('tcar')||ae.classList.contains('mdl'))))render()});
   ATOM.on(LKEY,function(){render()});
   load();render();setInterval(update,1000);
+
 })();</script>
 <script>(function(){
   var KEY='ledger-v2',items=[],filter='all';
@@ -599,17 +718,17 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     var list=[];
     items.forEach(function(it,i){
       var show=filter==='all'||(filter==='open'?!it.paid:it.paid);
-      if(show&&q&&((it.order||'')+' '+(it.model||'')+' '+it.name).toLowerCase().indexOf(q)<0)show=false;
+      if(show&&q&&((it.order||'')+' '+(it.model||'')+' '+(it.track||'')+' '+it.name).toLowerCase().indexOf(q)<0)show=false;
       if(show)list.push({it:it,n:i+1});
     });
     function row(x){var it=x.it;return '<tr data-id="'+it.id+'"><td>'+x.n+'</td><td>'+(it.order?'<span class="chip" title="'+esc(it.order)+'">'+esc(it.order)+'</span>':'-')+'</td>'+
       '<td><input class="mdl" placeholder="รุ่น" value="'+esc(it.model||'')+'"></td>'+
-      '<td class="name">'+esc(it.name)+(it.email?'<small>'+esc(it.email)+'</small>':'')+'</td>'+
+      '<td class="name">'+esc(it.name)+(it.email?'<small>'+esc(it.email)+'</small>':'')+(it.track?'<small>เลขพัสดุ '+esc(it.track)+' <button class="mini" data-a="trk">เช็ค</button></small>':'')+(it.note?'<small>'+esc(it.note)+'</small>':'')+'</td>'+
       '<td>'+fmt(it.qty)+'</td><td class="in">'+fmt(it.in)+'</td><td class="out">'+fmt(it.out)+'</td>'+
       '<td class="sum">'+fmt(it.out-it.in)+'</td>'+
       '<td><button class="pay '+(it.paid?'yes':'no')+'" data-a="pay">'+(it.paid?'ชำระแล้ว':'ยัง')+'</button></td>'+
       '<td><button class="pay ship '+(it.shipped?'yes':'no')+'" data-a="ship">'+(it.shipped?'จัดส่งแล้ว':'ยัง')+'</button></td>'+
-      '<td><button class="del" data-a="del">ลบ</button></td></tr>'}
+      '<td class="rb"><button class="ed" data-a="edit">แก้ไข</button><button class="del" data-a="del">ลบ</button></td></tr>'}
     var rows=[];
     if(grp){
       var g={},keys=[],nm={};
@@ -631,8 +750,8 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     var name=$('L_name').value.trim(),qty=parseFloat($('L_qty').value),pin=parseFloat($('L_in').value),pout=parseFloat($('L_out').value),em=$('L_email').value.trim();
     var err=!name?'กรุณากรอกชื่อรายการ':!(qty>0)?'กรุณากรอกจำนวนมากกว่า 0':(isNaN(pin)||pin<0)?'กรุณากรอกราคารับ':(isNaN(pout)||pout<0)?'กรุณากรอกราคาออก':(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))?'กรุณากรอกอีเมลให้ถูกต้อง':'';
     $('L_err').textContent=err;if(err)return;
-    items.push({id:'t'+Date.now()+Math.random().toString(36).slice(2,5),order:$('L_order').value.trim(),model:$('L_model').value.trim(),name:name,qty:qty,in:pin,out:pout,paid:$('L_paid').value==='1',shipped:$('L_ship').value==='1',email:em});
-    save();$('L_name').value='';$('L_model').value='';$('L_in').value='';$('L_out').value='';$('L_email').value='';$('L_qty').value='1';render();
+    items.push({id:'t'+Date.now()+Math.random().toString(36).slice(2,5),order:$('L_order').value.trim(),model:$('L_model').value.trim(),track:$('L_track').value.trim(),carrier:$('L_car').value,note:$('L_note').value.trim(),name:name,qty:qty,in:pin,out:pout,paid:$('L_paid').value==='1',shipped:$('L_ship').value==='1',email:em});
+    save();$('L_name').value='';$('L_model').value='';$('L_track').value='';$('L_note').value='';$('L_in').value='';$('L_out').value='';$('L_email').value='';$('L_qty').value='1';render();
   });
 
   $('L_body').addEventListener('click',function(e){
@@ -640,13 +759,15 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
     var id=b.closest('tr').dataset.id,it=items.filter(function(x){return x.id===id})[0];if(!it)return;
     if(b.dataset.a==='pay'){it.paid=!it.paid;save();render()}
     else if(b.dataset.a==='ship'){it.shipped=!it.shipped;save();render()}
+    else if(b.dataset.a==='edit'){openEdit(it)}
+    else if(b.dataset.a==='trk'){ATOM.cars.open(it.track,it.carrier,b)}
     else if(confirm('ลบรายการนี้ใช่หรือไม่')){items=items.filter(function(x){return x.id!==id});save();render()}
   });
 
   function buildReport(){
     var tot=0,paid=0,rest=0,rows='';
     items.forEach(function(it,i){var s=it.out-it.in;tot+=s;if(it.paid)paid+=s;else rest+=s;
-      rows+='<tr><td>'+(i+1)+'</td><td>'+esc(it.order||'-')+'</td><td>'+esc(it.model||'-')+'</td><td class="l">'+esc(it.name)+'</td><td>'+fmt(it.qty)+'</td><td>'+fmt(it.in)+'</td><td>'+fmt(it.out)+'</td><td>'+fmt(s)+'</td><td>'+(it.paid?'ชำระแล้ว':'ยัง')+'</td><td>'+(it.shipped?'จัดส่งแล้ว':'ยัง')+'</td></tr>'});
+      rows+='<tr><td>'+(i+1)+'</td><td>'+esc(it.order||'-')+'</td><td>'+esc(it.model||'-')+'</td><td class="l">'+esc(it.name)+(it.track?'<br><small>เลขพัสดุ: '+esc(it.track)+'</small>':'')+'</td><td>'+fmt(it.qty)+'</td><td>'+fmt(it.in)+'</td><td>'+fmt(it.out)+'</td><td>'+fmt(s)+'</td><td>'+(it.paid?'ชำระแล้ว':'ยัง')+'</td><td>'+(it.shipped?'จัดส่งแล้ว':'ยัง')+'</td></tr>'});
     $('L_report').innerHTML='<h1>'+esc(ATOM.title())+'</h1><p class="meta">พิมพ์เมื่อ '+new Date().toLocaleString('th-TH',{dateStyle:'long',timeStyle:'short'})+'</p>'+
       '<table><thead><tr><th>ลำดับ</th><th>Order</th><th>รุ่นโทรศัพท์</th><th>รายการ</th><th>จำนวน</th><th>ราคารับ</th><th>ราคาออก</th><th>รวม</th><th>ชำระหรือยัง</th><th>จัดส่ง</th></tr></thead><tbody>'+(rows||'<tr><td colspan="10">ไม่มีรายการ</td></tr>')+'</tbody></table>'+
       '<div class="tot"><span>รวมทั้งหมด '+fmt(tot)+'</span><span>ชำระแล้ว '+fmt(paid)+'</span><span>คงเหลือ '+fmt(rest)+'</span></div>';
@@ -654,6 +775,24 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   $('L_print').addEventListener('click',function(){buildReport();window.print()});
   window.addEventListener('beforeprint',buildReport);
 
+  $('L_car').innerHTML=ATOM.cars.opts('auto');
+  var eid=null;
+  function openEdit(it){
+    eid=it.id;
+    $('LE_order').value=it.order||'';$('LE_model').value=it.model||'';$('LE_name').value=it.name||'';$('LE_qty').value=it.qty;$('LE_in').value=it.in;$('LE_out').value=it.out;
+    $('LE_paid').value=it.paid?'1':'0';$('LE_ship').value=it.shipped?'1':'0';$('LE_track').value=it.track||'';$('LE_car').innerHTML=ATOM.cars.opts(it.carrier);
+    $('LE_note').value=it.note||'';$('LE_email').value=it.email||'';$('LE_err').textContent='';$('ledit').showModal();
+  }
+  $('LE_cancel').addEventListener('click',function(){$('ledit').close()});
+  $('LE_save').addEventListener('click',function(){
+    var it=items.filter(function(x){return x.id===eid})[0];if(!it){$('ledit').close();return}
+    var name=$('LE_name').value.trim(),qty=parseFloat($('LE_qty').value),pin=parseFloat($('LE_in').value),pout=parseFloat($('LE_out').value),em=$('LE_email').value.trim();
+    var err=!name?'กรุณากรอกชื่อรายการ':!(qty>0)?'กรุณากรอกจำนวนมากกว่า 0':(isNaN(pin)||pin<0)?'กรุณากรอกราคารับ':(isNaN(pout)||pout<0)?'กรุณากรอกราคาออก':(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))?'กรุณากรอกอีเมลให้ถูกต้อง':'';
+    $('LE_err').textContent=err;if(err)return;
+    it.order=$('LE_order').value.trim();it.model=$('LE_model').value.trim();it.name=name;it.qty=qty;it.in=pin;it.out=pout;
+    it.paid=$('LE_paid').value==='1';it.shipped=$('LE_ship').value==='1';it.track=$('LE_track').value.trim();it.carrier=$('LE_car').value;it.note=$('LE_note').value.trim();it.email=em;
+    save();$('ledit').close();render();
+  });
   function users(){var seen={},o='';ATOM.get('vault-items-v2').forEach(function(v){var u=(v.user||'').trim();if(u&&!seen[u.toLowerCase()]){seen[u.toLowerCase()]=1;o+='<option value="'+esc(u)+'">'}});$('L_users').innerHTML=o}
   ATOM.on('vault-items-v2',users);
   ATOM.on(KEY,function(a){items=a;var ae=document.activeElement;if(!(ae&&ae.classList&&ae.classList.contains('mdl')))render()});
@@ -671,11 +810,51 @@ label.chk{flex-direction:row;align-items:center;gap:6px}
   users();load();render();
 })();</script>
 <script>(function(){
-  var tabs=document.querySelectorAll('.side button'),views={vault:document.getElementById('vault'),ledger:document.getElementById('ledger'),settings:document.getElementById('settings')};
+  var C=[['thaipost','ไปรษณีย์ไทย','https://track.thailandpost.co.th/'],['flash','Flash Express','https://www.flashexpress.co.th/tracking/'],['kerry','Kerry Express','https://th.kerryexpress.com/en/track/'],['jt','J&T Express','https://www.jtexpress.co.th/'],['spx','SPX Express (Shopee)','https://spx.co.th/'],['ninja','Ninja Van','https://www.ninjavan.co/th-th/tracking'],['best','Best Express','https://www.best-inc.co.th/'],['dhl','DHL eCommerce','https://www.dhl.com/th-en/home/tracking.html'],['scg','SCG Express','https://www.scgexpress.co.th/'],['nim','NIM Express','https://www.nimexpress.com/']];
+  var $=function(id){return document.getElementById(id)};
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function find(k){return C.filter(function(c){return c[0]===k})[0]}
+  function detect(n){if(/^[A-Za-z]{2}\d{9}TH$/i.test(n))return 'thaipost';if(/^SPXTH/i.test(n))return 'spx';if(/^TH[0-9A-Z]{11,12}$/i.test(n))return 'flash';return ''}
+  function t17(n){return 'https://t.17track.net/en#nums='+encodeURIComponent(n)}
+  function nums(){var seen={},out=[];$('T_nums').value.split(/[\s,;]+/).forEach(function(x){x=x.trim();if(x&&!seen[x.toLowerCase()]&&out.length<200){seen[x.toLowerCase()]=1;out.push(x)}});return out}
+  function copy(v,btn,label){try{navigator.clipboard.writeText(v)}catch(e){}if(btn){var t=btn.textContent;btn.textContent=label||'คัดลอกแล้ว';setTimeout(function(){btn.textContent=t},1500)}}
+  function opts(sel){return '<option value="">ไม่ทราบขนส่ง</option>'+C.map(function(c){return '<option value="'+c[0]+'"'+(c[0]===sel?' selected':'')+'>'+esc(c[1])+'</option>'}).join('')}
+  $('T_car').innerHTML='<option value="auto">อัตโนมัติ</option>'+C.map(function(c){return '<option value="'+c[0]+'">'+esc(c[1])+'</option>'}).join('');
+  $('T_cars').innerHTML=C.map(function(c){return '<div class="ccard"><b>'+esc(c[1])+'</b><button class="btn" data-k="'+c[0]+'">เปิดหน้าเช็คพัสดุ</button></div>'}).join('');
+  try{$('T_nums').value=localStorage.getItem('atom-track-nums')||''}catch(e){}
+  $('T_nums').addEventListener('input',function(){try{localStorage.setItem('atom-track-nums',this.value)}catch(e){}});
+  $('T_go').addEventListener('click',function(){
+    var list=nums(),g=$('T_car').value,msg=$('T_msg');
+    if(!list.length){msg.textContent='กรุณาวางเลขพัสดุอย่างน้อย 1 เลข';$('T_res').innerHTML='';return}
+    msg.textContent='พบ '+list.length+' เลข';
+    $('T_res').innerHTML=list.map(function(n){var d=g==='auto'?detect(n):g;
+      return '<div class="trow" data-n="'+esc(n)+'"><span class="tn">'+esc(n)+'</span><select class="tc" aria-label="ขนส่ง">'+opts(d)+'</select><button class="btn pri" data-t="open">เปิดเว็บขนส่ง</button><button class="btn" data-t="17">17TRACK</button><button class="btn" data-t="copy">คัดลอก</button></div>'}).join('');
+  });
+  $('T_vault').addEventListener('click',function(){
+    var n=ATOM.get('vault-items-v2').filter(function(x){return x.track&&!x.doneAt}).map(function(x){return x.track}).concat(ATOM.get('ledger-v2').filter(function(x){return x.track}).map(function(x){return x.track}));n=n.filter(function(x,i){return n.indexOf(x)===i});
+    $('T_nums').value=n.join('\n');try{localStorage.setItem('atom-track-nums',$('T_nums').value)}catch(e){}
+    $('T_msg').textContent=n.length?'ดึงมา '+n.length+' เลข กด "ตรวจสอบ" ต่อได้เลย':'ยังไม่มีเลขพัสดุที่บันทึกไว้';
+  });
+  $('T_res').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-t]');if(!b)return;
+    var row=b.closest('.trow'),n=row.dataset.n,k=row.querySelector('.tc').value,t=b.dataset.t;
+    if(t==='copy'){copy(n,b);return}
+    if(t==='17'||!k){window.open(t17(n),'_blank','noopener');return}
+    copy(n);window.open(find(k)[2],'_blank','noopener');b.textContent='คัดลอกเลขแล้ว';setTimeout(function(){b.textContent='เปิดเว็บขนส่ง'},1800);
+  });
+  $('T_cars').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-k]');if(!b)return;
+    var first=nums()[0];if(first)copy(first);
+    window.open(find(b.dataset.k)[2],'_blank','noopener');
+    if(first){var t=b.textContent;b.textContent='คัดลอกเลขแล้ว';setTimeout(function(){b.textContent=t},1800)}
+  });
+})();</script>
+<script>(function(){
+  var tabs=document.querySelectorAll('.side button'),views={vault:document.getElementById('vault'),ledger:document.getElementById('ledger'),settings:document.getElementById('settings'),track:document.getElementById('track')};
   function show(n){if(!views[n])n='vault';for(var k in views)views[k].hidden=(k!==n);tabs.forEach(function(b){var on=b.dataset.v===n;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}
   tabs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.v);window.scrollTo(0,0);try{history.replaceState(null,'','#'+b.dataset.v)}catch(e){}})});
   show(location.hash.slice(1));
-  var VERSION='1.0.0',BUILD='11 พ.ย. 2569';
+  var VERSION='1.3.0',BUILD='12 พ.ย. 2569';
   document.querySelectorAll('.vn').forEach(function(e){e.textContent=VERSION+' (อัปเดต '+BUILD+')'});
 })();</script>
 </body>
